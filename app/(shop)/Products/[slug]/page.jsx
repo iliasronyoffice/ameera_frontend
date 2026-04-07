@@ -10,7 +10,7 @@ import Breadcrumb from "@/app/components/layout/Breadcrumb";
 
 // Helper to get API URL with fallback
 function getApiUrl() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://dev.nisamirrorfashionhouse.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://dev2.nisamirrorfashionhouse.com';
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   
   if (apiUrl && apiUrl.startsWith('/')) {
@@ -192,7 +192,7 @@ export default async function ProductPage({ params }) {
               "price": productData.calculable_price,
               "priceCurrency": productData.currency_symbol || "BDT",
               "availability": productData.current_stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-              "url": `${process.env.NEXT_PUBLIC_SITE_URL || 'https://dev.nisamirrorfashionhouse.com'}/products/${slug}`
+              "url": `${process.env.NEXT_PUBLIC_SITE_URL || 'https://dev2.nisamirrorfashionhouse.com'}/products/${slug}`
             },
             ...(productData.rating > 0 && {
               "aggregateRating": {

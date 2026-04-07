@@ -7,7 +7,7 @@
 // import Link from "next/link";
 // import Image from "next/image";
 
-// const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dev.nisamirrorfashionhouse.com/api/v2';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dev2.nisamirrorfashionhouse.com/api/v2';
 
 // export default function SearchbarDesktop({ 
 //   open, 
@@ -396,7 +396,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dev.nisamirrorfashionhouse.com/api/v2';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dev2.nisamirrorfashionhouse.com/api/v2';
 
 export default function SearchbarDesktop({ 
   open, 

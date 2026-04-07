@@ -10,7 +10,7 @@ import { FaSpinner } from "react-icons/fa";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ||
-  "https://dev.nisamirrorfashionhouse.com/api/v2";
+  "https://dev2.nisamirrorfashionhouse.com/api/v2";
 
 export default function Shop() {
   const router = useRouter();

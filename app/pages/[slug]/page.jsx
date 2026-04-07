@@ -196,7 +196,7 @@ export async function generateMetadata({ params }) {
   
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/v2/seo/page/${slug}`, {
-    // const response = await fetch('https://dev.nisamirrorfashionhouse.com/api/v2/seo/page/${slug}', {
+    // const response = await fetch('https://dev2.nisamirrorfashionhouse.com/api/v2/seo/page/${slug}', {
       cache: 'force-cache',
       next: { revalidate: 3600 }
     });
@@ -263,7 +263,7 @@ export async function generateMetadata({ params }) {
 async function getPageData(slug) {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/v2/seo/page/${slug}`, {
-    // const response = await fetch('https://dev.nisamirrorfashionhouse.com/api/v2/seo/page/${slug}', {
+    // const response = await fetch('https://dev2.nisamirrorfashionhouse.com/api/v2/seo/page/${slug}', {
       cache: 'force-cache',
       next: { revalidate: 3600 }
     });

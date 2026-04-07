@@ -2,7 +2,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 // API Base URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dev.nisamirrorfashionhouse.com/api/v2';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dev2.nisamirrorfashionhouse.com/api/v2';
 
 // Helper function to safely access localStorage
 const getLocalStorageItem = (key) => {

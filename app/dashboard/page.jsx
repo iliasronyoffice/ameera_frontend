@@ -30,7 +30,7 @@ export default function DashboardOverview() {
 //     try {
 //       const response = await fetch(
 //         `${process.env.NEXT_PUBLIC_API_URL}/auth/dashboard/stats`,
-//         // 'https://dev.nisamirrorfashionhouse.com/api/v2/auth/dashboard/stats',
+//         // 'https://dev2.nisamirrorfashionhouse.com/api/v2/auth/dashboard/stats',
 //         {
 //           headers: {
 //             'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ const fetchDashboardData = async () => {
     
     const response = await fetch(
       `${apiUrl}/auth/dashboard/stats`,
-    // 'https://dev.nisamirrorfashionhouse.com/api/v2/auth/dashboard/stats',
+    // 'https://dev2.nisamirrorfashionhouse.com/api/v2/auth/dashboard/stats',
       {
         headers: {
           'Content-Type': 'application/json',

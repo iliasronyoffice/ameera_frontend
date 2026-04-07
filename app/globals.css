@@ -69,10 +69,11 @@
 /* Fix pagination container */
 .swiper-pagination {
   display: flex !important; /* horizontal layout */
-  justify-content: center; /* center horizontally */
+  justify-content: end; /* center horizontally */
   align-items: center;
   gap: 6px; /* space between bullets */
-  bottom: 12px !important; /* adjust vertical position */
+  bottom: 60px !important; /* adjust vertical position */
+  padding-right: 100px;
   position: absolute !important; /* ensure positioned correctly */
   width: 100%;
   z-index: 10;
@@ -80,9 +81,9 @@
 
 /* Outer circle (inactive bullet) */
 .swiper-pagination-bullet {
-  width: 14px !important;
-  height: 14px !important;
-  border: 1px solid #000 !important;
+  width: 8px !important;
+  height: 8px !important;
+  border: 1px solid #fff !important;
   border-radius: 50% !important;
   background: transparent !important;
   display: inline-flex !important;
@@ -98,7 +99,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #000;
+  background: #ffffff;
   display: block;
   position: absolute;
   top: 50%;
@@ -208,6 +209,36 @@
 .swiper-button-prev::after {
   font-size: 14px;
   color: #333;
+}
+
+/* search modal animated  */
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-down {
+  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Optional: Backdrop fade animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fixed.inset-0.z-\[9999\] .absolute.inset-0 {
+  animation: fadeIn 0.5s ease-out;
 }
 body {
   background: var(--background);

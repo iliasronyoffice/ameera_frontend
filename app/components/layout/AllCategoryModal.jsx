@@ -706,7 +706,7 @@ export default function AllCategoryModal() {
           )}
 
           {/* Category Banner if available */}
-          {/* {currentMenu.banner && currentMenu.banner !== "https://dev.nisamirrorfashionhouse.com/public/assets/img/placeholder.jpg" && (
+          {/* {currentMenu.banner && currentMenu.banner !== "https://dev2.nisamirrorfashionhouse.com/public/assets/img/placeholder.jpg" && (
             <div className="p-4 mt-4">
               <img 
                 src={currentMenu.banner} 
