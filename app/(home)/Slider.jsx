@@ -113,17 +113,17 @@ export default function Slider() {
           </div>
         ) : hasSliders && displaySliders ? (
           <Swiper
-            modules={[Autoplay, Navigation, Pagination]}
+            modules={[Autoplay, Pagination]}
             autoplay={{
               delay: 3000,
               disableOnInteraction: false,
               pauseOnMouseEnter: true,
             }}
             pagination={{ clickable: true }}
-            onBeforeInit={(swiper) => {
-              swiper.params.navigation.prevEl = prevRef.current;
-              swiper.params.navigation.nextEl = nextRef.current;
-            }}
+            // onBeforeInit={(swiper) => {
+            //   swiper.params.navigation.prevEl = prevRef.current;
+            //   swiper.params.navigation.nextEl = nextRef.current;
+            // }}
             loop={true}
             speed={600}
             className="overflow-hidden shadow-md relative"
@@ -197,7 +197,7 @@ export default function Slider() {
             ))}
 
             {/* Custom Nav Buttons */}
-            <button
+            {/* <button
               ref={prevRef}
               aria-label="Previous slide"
               className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-[30px] h-[30px] lg:w-[40px] lg:h-[40px] bg-black/40 hover:bg-black/60 rounded-full flex items-center justify-center text-white transition-all duration-200"
@@ -212,8 +212,8 @@ export default function Slider() {
                   strokeLinejoin="round"
                 />
               </svg>
-            </button>
-
+            </button> */}
+{/* 
             <button
               ref={nextRef}
               aria-label="Next slide"
@@ -229,7 +229,7 @@ export default function Slider() {
                   strokeLinejoin="round"
                 />
               </svg>
-            </button>
+            </button> */}
           </Swiper>
         ) : (
           <div className="flex items-center justify-center h-[150px] md:h-[320px] lg:h-[320px] 2xl:h-[400px] bg-gray-100 rounded-lg">

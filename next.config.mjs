@@ -6,7 +6,7 @@ const nextConfig = {
       // Local development
       {
         protocol: "http",
-        hostname: "localhost",
+       hostname: "localhost",
         port: "",
         pathname: "/**", // Allow all paths on localhost
       },
@@ -36,14 +36,28 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
-  async rewrites() {
-    return [
-      {
-        source: "/api/v2/:path*",
-        destination: "https://dev2.nisamirrorfashionhouse.com/api/v2/:path*",
-      },
-    ];
-  },
+ async rewrites() {
+  return [
+    {
+      source: "/api/v2/:path*",
+      destination: "https://dev2.nisamirrorfashionhouse.com/api/v2/:path*",
+      // source: "/api/v2/:path*",
+      // destination: "http://localhost/ameera/api/v2/:path*",
+    },
+  ];
+},
+
+async headers() {
+  return [
+    {
+      source: "/api/v2/:path*",
+      headers: [
+        { key: "Accept", value: "application/json" },
+        { key: "Content-Type", value: "application/json" },
+      ],
+    },
+  ];
+},
 };
 
 export default nextConfig;

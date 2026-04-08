@@ -1,7 +1,7 @@
 "use client";
 
 import SearchbarDesktop from "@/app/components/layout/SearchBarDesktop";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function SearchModal({ 
   isOpen, 
@@ -12,53 +12,51 @@ export default function SearchModal({
   setSelectedCategory, 
   categories 
 }) {
-  const [scrollbarWidth, setScrollbarWidth] = useState(0);
-
-  // Calculate scrollbar width
-  useEffect(() => {
-    const calculateScrollbarWidth = () => {
-      const width = window.innerWidth - document.documentElement.clientWidth;
-      setScrollbarWidth(width);
-    };
-    calculateScrollbarWidth();
-  }, []);
-
   useEffect(() => {
     if (isOpen) {
-      // Save current scroll position
+      // Calculate scrollbar width
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      
+      // Get the header element
+      const header = document.querySelector('header');
+      
+      // Store current scroll position
       const scrollY = window.scrollY;
       
-      // Apply styles to prevent scroll and maintain position
-      document.body.style.overflow = "hidden";
-      document.body.style.position = "fixed";
+      // Lock body scroll and prevent shift
+      document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = "100%";
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflowY = 'scroll'; // Keep scrollbar visible
       
-      // Also add padding to header to prevent shift
-      const header = document.querySelector('header');
+      // Add padding to header to prevent shift
       if (header) {
         header.style.paddingRight = `${scrollbarWidth}px`;
       }
+      
+      // Store scroll position for restoration
+      document.body.dataset.scrollPosition = scrollY;
     } else {
       // Restore scroll position
-      const scrollY = document.body.style.top;
-      document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.width = "";
-      document.body.style.paddingRight = "";
+      const scrollY = document.body.dataset.scrollPosition;
+      
+      // Restore body styles
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflowY = '';
       
       // Remove header padding
       const header = document.querySelector('header');
       if (header) {
-        header.style.paddingRight = "";
+        header.style.paddingRight = '';
       }
       
       // Restore scroll position
       if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+        window.scrollTo(0, parseInt(scrollY));
       }
+      delete document.body.dataset.scrollPosition;
     }
     
     const handleEsc = (e) => {
@@ -70,20 +68,26 @@ export default function SearchModal({
     }
     
     return () => {
-      document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.width = "";
-      document.body.style.paddingRight = "";
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflowY = '';
       
       const header = document.querySelector('header');
       if (header) {
-        header.style.paddingRight = "";
+        header.style.paddingRight = '';
       }
       
       window.removeEventListener("keydown", handleEsc);
+      
+      // Restore scroll on cleanup
+      const scrollY = document.body.dataset.scrollPosition;
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY));
+        delete document.body.dataset.scrollPosition;
+      }
     };
-  }, [isOpen, onClose, scrollbarWidth]);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 

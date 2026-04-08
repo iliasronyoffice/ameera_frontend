@@ -7,6 +7,7 @@ import CartModal from '@/app/components/CartModal';
 import Footer from '@/app/components/layout/Footer';
 import Header from '@/app/components/layout/Header';
 
+
 export default function LayoutDetector({ children }) {
   const pathname = usePathname();
   
@@ -28,6 +29,7 @@ export default function LayoutDetector({ children }) {
   // Show all frontend components for non-dashboard routes
   return (
     <>
+     
       <Header />
       {children}
       <CartModal />

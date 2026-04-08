@@ -30,11 +30,12 @@ import { setUser, logout as logoutAction } from "@/store/slices/authSlice";
 import ButtonSearchIcon from "../icons/ButtonSearchIcon";
 import SearchModal from "@/components/SearchModal";
 import { usePathname } from "next/navigation";
+import TopHeader from "../TopHeader";
 
 // Loading Skeleton Component
 const LoadingSkeleton = () => (
   <header className="bg-transparent text-white sticky top-0 z-50 shadow-md">
-    <div className="flex items-center justify-between px-2 py-3 lg:p-4">
+    <div className="flex items-center justify-between px-2 py-1 lg:p-2">
       {/* Logo Skeleton */}
       <div className="flex-shrink-0">
         <div className="w-20 h-auto sm:w-28 md:w-32 lg:w-40">
@@ -65,6 +66,7 @@ export default function Header() {
   const isHomePage = pathname === "/";
   const dispatch = useAppDispatch();
   const [logoUrl, setLogoUrl] = useState(defaultLogo);
+  const [topHeader, setTopHeader] = useState("title");
   const [logoLoaded, setLogoLoaded] = useState(false);
 
   // Get auth state from Redux
@@ -199,14 +201,16 @@ export default function Header() {
           const parsedCache = JSON.parse(cachedData);
           if (parsedCache.header_logo) {
             setLogoUrl(parsedCache.header_logo);
-            setIsLogoFetching(false);
-
-            // If cache is expired, refresh in background
-            if (cachedTime && now - Number(cachedTime) >= 60 * 60 * 1000) {
-              fetchFreshLogo();
-            }
-            return;
           }
+          if (parsedCache.top_header) {
+            setTopHeader(parsedCache.top_header); // ✅ set top_header from cache too
+          }
+          setIsLogoFetching(false);
+
+          if (cachedTime && now - Number(cachedTime) >= 60 * 60 * 1000) {
+            fetchFreshLogo();
+          }
+          return;
         }
 
         // No cache, fetch fresh data
@@ -223,7 +227,7 @@ export default function Header() {
         const baseUrl =
           process.env.NEXT_PUBLIC_API_URL ||
           "https://dev2.nisamirrorfashionhouse.com/api/v2";
-        const response = await fetch(`${baseUrl}/logo-details/header_logo`, {
+        const response = await fetch(`${baseUrl}/header-details`, {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
@@ -235,17 +239,28 @@ export default function Header() {
         }
 
         const data = await response.json();
+        console.log("Fetching fresh logo from API...", data);
 
         // Save to cache
         localStorage.setItem("header_logo_data", JSON.stringify(data));
         localStorage.setItem("header_logo_time", Date.now().toString());
 
         // Update state
-        if (data && data.header_logo) {
-          setLogoUrl(data.header_logo);
-        } else {
-          setLogoUrl("/default-logo.png");
+        // Fix fresh fetch path
+        if (data) {
+          if (data.header_logo) {
+            setLogoUrl(data.header_logo); // ✅ set independently
+          } else {
+            setLogoUrl(defaultLogo);
+          }
+
+          if (data.top_header) {
+            setTopHeader(data.top_header); // ✅ set independently
+          } else {
+            setTopHeader("Default Top Header Text");
+          }
         }
+
       } catch (error) {
         console.error("Error fetching fresh logo:", error);
         setLogoUrl("/default-logo.png");
@@ -431,65 +446,56 @@ export default function Header() {
 
   return (
     <>
-      <header
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-          isHomePage
-            ? isScrolled
-              ? "bg-white text-black shadow-md"
-              : "bg-transparent text-white"
-            : "bg-white text-black shadow-md"
-        }`}
-      >
-        {/* Top Row */}
-        <div className="flex items-center justify-between px-2 py-3 lg:p-4">
-          <div className="search-part">
-            {/* Search Button - Opens Modal */}
-            <div
-              className="flex cursor-pointer"
-              onClick={() => setShowSearchModal(true)}
-            >
-              <ButtonSearchIcon
-                width={20}
-                height={20}
-                color={
-                  isHomePage ? (isScrolled ? "#000000" : "#ffffff") : "#000000"
-                }
-              />
-              <span className="ml-2 text-sm lg:text-base uppercase">
-                Search
-              </span>
+      {/* top header part  */}
+      {/* Top Header */}
+      <div className="fixed top-0 left-0 w-full z-50">
+        <div
+          className={`transition-all duration-300 overflow-hidden ${
+            isScrolled ? "max-h-0 opacity-0" : "max-h-10 opacity-100"
+          }`}
+        >
+          <TopHeader topHeader={topHeader} />
+        </div>
+        {/* Main Header */}
+        <header
+          className={`w-full transition-all duration-300 ${
+            isHomePage
+              ? isScrolled
+                ? "bg-white text-black shadow-md"
+                : "bg-transparent text-white hover:bg-white hover:text-black"
+              : "bg-white text-black shadow-md"
+          }`}
+        >
+          {/* Top Row */}
+          <div className="flex items-center justify-between px-2 py-1">
+            <div className="search-part">
+              {/* Search Button - Opens Modal */}
+              <AllCategoryModal />
             </div>
-          </div>
-          {/* Logo - with progressive loading */}
-          <div className="flex-shrink-0">
-            <Link href="/" className="block">
-              {logoUrl && !isLogoFetching ? (
-                <Image
-                  src={logoUrl}
-                  alt="logo"
-                  width={150}
-                  height={40}
-                  className="object-contain"
-                  unoptimized
-                  loading="eager"
-                  style={{
-                    width: "100%",
-                    height: "auto",
-                    maxWidth: "140px",
-                  }}
-                  onError={() => {
-                    setLogoUrl("/default-logo.png");
-                  }}
-                />
-              ) : (
-                // Show placeholder while logo loads (no animation to avoid perceived delay)
-                <div className="w-[160px] h-[80px] bg-transparent" />
-              )}
-            </Link>
-          </div>
+            {/* Logo - with progressive loading */}
+            <div className="flex-shrink-0">
+              <Link href="/" className="block">
+                {logoUrl && !isLogoFetching ? (
+                  <Image
+                    src={logoUrl}
+                    alt="logo"
+                    width={150}
+                    height={40}
+                    className="object-contain w-[75px] md:w-[120px] lg:w-[140px] h-auto"
+                    unoptimized
+                    loading="eager"
+                    onError={() => {
+                      setLogoUrl("/default-logo.png");
+                    }}
+                  />
+                ) : (
+                  <div className="w-[75px] md:w-[120px] lg:w-[140px] h-[40px] bg-transparent" />
+                )}
+              </Link>
+            </div>
 
-          {/* Search Bar - Desktop */}
-          {/* <SearchBarDesktop
+            {/* Search Bar - Desktop */}
+            {/* <SearchBarDesktop
             open={open}
             setOpen={setOpen}
             selectedCategory={selectedCategory}
@@ -497,184 +503,181 @@ export default function Header() {
             categories={categories}
           /> */}
 
-          {/* Right Side Navigation */}
-          <div className="flex items-center justify-end gap-3 lg:gap-6 text-xs lg:text-sm">
-            {/* Contact us section  */}
-            <div className="hidden md:flex items-center pr-4">
-              <Link href="/" className="hover:underline uppercase">
-                Contact Us
-              </Link>
-            </div>
-            {/* User Section */}
-            <div className="relative" ref={userDropdownRef}>
-              {isAuthenticated && user ? (
-                <>
+            {/* Right Side Navigation */}
+            <div className="flex items-center justify-end gap-3 lg:gap-6 text-xs lg:text-sm">
+              {/* Search section  */}
+              <div className="search-part">
+                {/* Search Button - Opens Modal */}
+                <div
+                  className="flex cursor-pointer"
+                  onClick={() => setShowSearchModal(true)}
+                >
+                  <ButtonSearchIcon
+                    width={20}
+                    height={20}
+                    color="currentColor"
+                  />
+                </div>
+              </div>
+              {/* User Section */}
+              <div className="relative" ref={userDropdownRef}>
+                {isAuthenticated && user ? (
+                  <>
+                    <button
+                      className="cursor-pointer flex items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none"
+                      onClick={() => setShowUserDropdown(!showUserDropdown)}
+                    >
+                      <div className="md:w-10 w-6 md:h-10 h-6 rounded-full bg-main flex items-center justify-center">
+                        <span className="text-black font-bold text-sm">
+                          {getUserInitials()}
+                        </span>
+                      </div>
+                      <div className="text-left hidden lg:block">
+                        <div className="text-xs text-gray-300">Hello,</div>
+                        <div className="font-bold text-sm truncate max-w-[100px]">
+                          {user.name?.split(" ")[0]}
+                        </div>
+                      </div>
+                    </button>
+
+                    {/* User Dropdown Menu */}
+                    {showUserDropdown && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 z-50 border border-gray-200">
+                        <div className="lg:hidden px-4 py-2 border-b border-gray-200">
+                          <p className="text-xs text-gray-500">Signed in as</p>
+                          <p className="text-sm font-semibold text-gray-800 truncate">
+                            {user.name}
+                          </p>
+                        </div>
+
+                        <Link
+                          href="/dashboard"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                          onClick={() => setShowUserDropdown(false)}
+                        >
+                          Dashboard
+                        </Link>
+                        <Link
+                          href="/profile"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                          onClick={() => setShowUserDropdown(false)}
+                        >
+                          My Profile
+                        </Link>
+                        <Link
+                          href="/orders"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                          onClick={() => setShowUserDropdown(false)}
+                        >
+                          My Orders
+                        </Link>
+                        <Link
+                          href="/wishlist"
+                          className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                          onClick={() => setShowUserDropdown(false)}
+                        >
+                          <span>Wishlist</span>
+                          {wishlistCount > 0 && (
+                            <span className="bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
+                              {wishlistCount}
+                            </span>
+                          )}
+                        </Link>
+                        <div className="border-t border-gray-200 my-1"></div>
+                        <button
+                          onClick={handleLogout}
+                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </>
+                ) : (
                   <button
                     className="cursor-pointer flex items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none"
-                    onClick={() => setShowUserDropdown(!showUserDropdown)}
+                    onClick={() => setShowLogin(true)}
                   >
-                    <div className="md:w-10 w-6 md:h-10 h-6 rounded-full bg-main flex items-center justify-center">
-                      <span className="text-black font-bold text-sm">
-                        {getUserInitials()}
-                      </span>
-                    </div>
-                    <div className="text-left hidden lg:block">
-                      <div className="text-xs text-gray-300">Hello,</div>
-                      <div className="font-bold text-sm truncate max-w-[100px]">
-                        {user.name?.split(" ")[0]}
-                      </div>
-                    </div>
-                  </button>
-
-                  {/* User Dropdown Menu */}
-                  {showUserDropdown && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 z-50 border border-gray-200">
-                      <div className="lg:hidden px-4 py-2 border-b border-gray-200">
-                        <p className="text-xs text-gray-500">Signed in as</p>
-                        <p className="text-sm font-semibold text-gray-800 truncate">
-                          {user.name}
-                        </p>
-                      </div>
-
-                      <Link
-                        href="/dashboard"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                        onClick={() => setShowUserDropdown(false)}
-                      >
-                        Dashboard
-                      </Link>
-                      <Link
-                        href="/profile"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                        onClick={() => setShowUserDropdown(false)}
-                      >
-                        My Profile
-                      </Link>
-                      <Link
-                        href="/orders"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                        onClick={() => setShowUserDropdown(false)}
-                      >
-                        My Orders
-                      </Link>
-                      <Link
-                        href="/wishlist"
-                        className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                        onClick={() => setShowUserDropdown(false)}
-                      >
-                        <span>Wishlist</span>
-                        {wishlistCount > 0 && (
-                          <span className="bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
-                            {wishlistCount}
-                          </span>
-                        )}
-                      </Link>
-                      <div className="border-t border-gray-200 my-1"></div>
-                      <button
-                        onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
-                      >
-                        Logout
-                      </button>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <button
-                  className="cursor-pointer flex items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none"
-                  onClick={() => setShowLogin(true)}
-                >
-                  <UserIcon
-                    width={24}
-                    height={24}
-                    color={
-                  isHomePage ? (isScrolled ? "#000000" : "#ffffff") : "#000000"
-                }
-                  />
-                  {/* <div className="hidden lg:block text-left">
+                    <UserIcon
+                      width={24}
+                      height={24}
+                      // color={
+                      //   isHomePage
+                      //     ? isScrolled
+                      //       ? "#000000"
+                      //       : "#ffffff"
+                      //     : "#000000"
+                      // }
+                      color="currentColor"
+                    />
+                    {/* <div className="hidden lg:block text-left">
                     <div className="text-xs text-gray-300">Hello,</div>
                     <div className="font-bold text-sm">Sign In</div>
                   </div> */}
-                </button>
-              )}
-            </div>
+                  </button>
+                )}
+              </div>
 
-            {/* Wishlist Icon */}
-            <Link
-              href="/wishlist"
-              className="cursor-pointer relative flex items-center hover:opacity-80 group focus:outline-none px-3"
-            >
-              {wishlistCount > 0 && (
-                <span className="absolute -top-2 -right-[2px] bg-red-400 text-black text-xs font-bold rounded-full md:min-w-[20px] min-w-[5px] md:h-5 h-4 px-1 flex items-center justify-center group-hover:scale-110 transition-transform ml-2">
-                  {wishlistCount}
-                </span>
-              )}
-              <span className="">
-                <WishlistIcon
-                  width={24}
-                  height={21}
-                  color={
-                  isHomePage ? (isScrolled ? "#000000" : "#ffffff") : "#000000"
-                }
-                />
-              </span>
-            </Link>
-
-            {/* Cart Icon */}
-            <div className="relative pr-2" ref={cartDropdownRef}>
-              <button
-                onClick={handleCartClick}
-                className="relative flex items-center cursor-pointer hover:opacity-80 group focus:outline-none"
+              {/* Wishlist Icon */}
+              <Link
+                href="/wishlist"
+                className="cursor-pointer relative flex items-center hover:opacity-80 group focus:outline-none"
               >
-                <span className="absolute -top-2 -right-2 bg-main text-black text-xs font-bold rounded-full md:min-w-[20px] min-w-[5px] md:h-5 h-4 px-1 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  {cartLoading ? (
-                    <span className="animate-pulse">...</span>
-                  ) : (
-                    totalQuantity || 0
-                  )}
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-2 -right-[2px] bg-red-400 text-black text-xs font-bold rounded-full md:min-w-[20px] min-w-[5px] md:h-5 h-4 px-1 flex items-center justify-center group-hover:scale-110 transition-transform ml-2">
+                    {wishlistCount}
+                  </span>
+                )}
+                <span className="">
+                  <WishlistIcon width={24} height={21} color="currentColor" />
                 </span>
-                <span className="hidden md:block">
-                  <CartIcon
-                    width={24}
-                    height={24}
-                    color={
-                      isHomePage ? (isScrolled ? "#000000" : "#ffffff") : "#000000"
-                    }
-                  />
-                </span>
-                <span className="md:hidden">
-                  <CartIcon
-                    width={20}
-                    height={20}
-                    color={
-                      isHomePage ? (isScrolled ? "#000000" : "#ffffff") : "#000000"
-                    }
-                  />
-                </span>
-              </button>
+              </Link>
 
-              {/* Cart Dropdown */}
-              {showCartDropdown && (
-                <CartDropdown
-                  loading={cartLoading}
-                  onClose={() => setShowCartDropdown(false)}
-                />
-              )}
+              {/* Cart Icon */}
+              <div className="relative pr-2" ref={cartDropdownRef}>
+                <button
+                  onClick={handleCartClick}
+                  className="relative flex items-center cursor-pointer hover:opacity-80 group focus:outline-none"
+                >
+                  {totalQuantity > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-main text-white text-xs font-bold rounded-full md:min-w-[20px] min-w-[5px] md:h-5 h-4 px-1 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      {cartLoading ? (
+                        <span className="animate-pulse">...</span>
+                      ) : (
+                        totalQuantity || 0
+                      )}
+                    </span>
+                  )}
+                  <span className="hidden md:block">
+                    <CartIcon width={24} height={24} color="currentColor" />
+                  </span>
+                  <span className="md:hidden">
+                    <CartIcon width={20} height={20} color="currentColor" />
+                  </span>
+                </button>
+
+                {/* Cart Dropdown */}
+                {showCartDropdown && (
+                  <CartDropdown
+                    loading={cartLoading}
+                    onClose={() => setShowCartDropdown(false)}
+                  />
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Search Bar - Mobile */}
-        <SearchBarMobile
+          {/* Search Bar - Mobile */}
+          {/* <SearchBarMobile
           open={open}
           setOpen={setOpen}
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
           categories={categories}
-        />
+        /> */}
 
-        {/* Bottom Navigation */}
-        <nav className="bg-transparent text-sm px-1 lg:px-4 py-2 flex items-center gap-3 lg:gap-4 overflow-x-auto whitespace-nowrap scrollbar-hide">
+          {/* Bottom Navigation */}
+          {/* <nav className="bg-transparent text-sm px-1 lg:px-4 py-2 flex items-center gap-3 lg:gap-4 overflow-x-auto whitespace-nowrap scrollbar-hide">
           {categories.map((cat) => (
             <Link
               key={cat.id}
@@ -696,10 +699,11 @@ export default function Header() {
           >
             Need Help?
           </Link>
-        </nav>
+        </nav> */}
 
-        {/* Search Modal */}
-      </header>
+          {/* Search Modal */}
+        </header>
+      </div>
 
       {/* Search Modal - Outside header */}
       <SearchModal

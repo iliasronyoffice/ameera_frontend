@@ -60,7 +60,7 @@ export default function useCachedFetch(url, cacheKey, cacheDuration = 6 * 60 * 1
           return;
         }
 
-        // console.log('Fetching fresh data from:', url);
+        console.log('Fetching fresh data from:', url);
         
         // Fetch new data
         const response = await fetch(url);
