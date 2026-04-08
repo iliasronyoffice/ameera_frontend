@@ -1,63 +1,69 @@
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     remotePatterns: [
-      // Local development
+      // Local development - your PHP backend
       {
         protocol: "http",
-       hostname: "localhost",
+        hostname: "localhost",
         port: "",
-        pathname: "/**", // Allow all paths on localhost
+        pathname: "/ameera/public/uploads/**", // Specific path for uploads
       },
-      // Main production server - allow all paths
+      // Allow all localhost paths if needed
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "",
+        pathname: "/**",
+      },
+      // Production servers
       {
         protocol: "https",
         hostname: "dev.nisamirrorfashionhouse.com",
         port: "",
-        pathname: "/**", // Changed from specific path to all paths
+        pathname: "/public/uploads/**",
       },
       {
         protocol: "https",
         hostname: "dev2.nisamirrorfashionhouse.com",
         port: "",
-        pathname: "/**", // Changed from specific path to all paths
+        pathname: "/public/uploads/**",
       },
-      // Your other server (if still needed)
- 
     ],
-    // Optional: Configure device sizes for responsive images
-    qualities: [75, 85],
+    // Disable the default image loader to prevent optimization errors
+    unoptimized: process.env.NODE_ENV === 'development', // Skip optimization in dev
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     formats: ['image/webp'],
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
- async rewrites() {
-  return [
-    {
-      source: "/api/v2/:path*",
-      destination: "https://dev2.nisamirrorfashionhouse.com/api/v2/:path*",
-      // source: "/api/v2/:path*",
-      // destination: "http://localhost/ameera/api/v2/:path*",
-    },
-  ];
-},
+  async rewrites() {
+    return [
+      {
+        source: "/api/v2/:path*",
+        destination: "http://localhost/ameera/api/v2/:path*",
+      },
+      // Add rewrite for images to avoid CORS issues
+      {
+        source: "/uploads/:path*",
+        destination: "http://localhost/ameera/public/uploads/:path*",
+      },
+    ];
+  },
 
-async headers() {
-  return [
-    {
-      source: "/api/v2/:path*",
-      headers: [
-        { key: "Accept", value: "application/json" },
-        { key: "Content-Type", value: "application/json" },
-      ],
-    },
-  ];
-},
+  async headers() {
+    return [
+      {
+        source: "/api/v2/:path*",
+        headers: [
+          { key: "Accept", value: "application/json" },
+          { key: "Content-Type", value: "application/json" },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

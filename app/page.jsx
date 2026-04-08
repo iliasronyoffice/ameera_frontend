@@ -8,14 +8,18 @@ import TopSellers from "./(home)/TopSellers";
 import OurBrands from "./(home)/OurBrands";
 import CategoryWiseProducts from "./(home)/CategoryWiseProducts";
 import ThirdBanner from "./(home)/ThirdBanner";
+import FeaturedCategory from "./(home)/FeaturedCategory";
+import BestSelling from "./(home)/BestSelling";
 
 
 export default async function Home() {
   return (
     <div className="min-h-screen font-sans">
       <Slider />
-      <FeaturedProducts />
-      <BestDeals></BestDeals>
+      <FeaturedCategory />
+      <BestSelling />
+      {/* <FeaturedProducts /> */}
+      {/* <BestDeals></BestDeals> */}
       <SecondBanner />
       <JustForYou />
       <ThirdBanner />
