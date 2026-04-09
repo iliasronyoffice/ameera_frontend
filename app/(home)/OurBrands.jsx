@@ -75,8 +75,8 @@ export default function OurBrands() {
             320: { slidesPerView: 2 },
             640: { slidesPerView: 3 },
             768: { slidesPerView: 4 },
-            1024: { slidesPerView: 5 },
-            1280: { slidesPerView: 6 },
+            1024: { slidesPerView: 4 },
+            1280: { slidesPerView: 4 },
           }}
           className="brands-swiper"
           onSlideChange={(swiper) => {

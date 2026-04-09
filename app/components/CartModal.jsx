@@ -297,7 +297,7 @@ export default function CartModal() {
                           spaceBetween={10}
                           slidesPerView={4}
                           watchSlidesProgress
-                          className="thumb-swiper"
+                          className="thumb-swiper cartmodal"
                           style={{ height: "80px" }}
                         >
                           {galleryImages.map((image) => (

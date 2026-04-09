@@ -128,7 +128,7 @@ export default function JustForYou() {
   const visibleProducts = products.slice(0, visibleCount);
 
   return (
-    <div className="container mx-auto px-4 py-5">
+    <div className="mx-auto px-2 md:px-10 py-5">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3 mb-5">
         <h2 className="text-xl sm:text-xl md:text-3xl font-semibold text-black">
@@ -190,7 +190,7 @@ export default function JustForYou() {
       {/* Products Grid */}
       {!loading && !error && (
         <>
-          <div className="grid grid-cols-2 2xl:grid-cols-6 lg:grid-cols-6 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 2xl:grid-cols-4 lg:grid-cols-4 md:grid-cols-4 gap-3">
             {visibleProducts.map((item, index) => (
               <ProductCard1 key={item.id} item={item} priority={index < 6}/>
             ))}

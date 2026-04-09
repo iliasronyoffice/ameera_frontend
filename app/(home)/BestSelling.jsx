@@ -11,7 +11,7 @@ import Link from "next/link";
 // Skeleton component
 function BestSellingSkeleton() {
   return (
-    <div className="best-selling-product-section container mx-auto px-4 py-8">
+    <div className="best-selling-product-section mx-auto px-2 md:px-10 py-8">
       <div className="flex justify-between items-center mb-4">
         <div className="h-8 w-48 bg-gray-200 animate-pulse rounded"></div>
         <div className="h-8 w-24 bg-gray-200 animate-pulse rounded"></div>
@@ -133,7 +133,7 @@ export default function BestSelling() {
   // Error state
   if (error) {
     return (
-      <div className="best-selling-product-section container mx-auto px-4 py-8">
+      <div className="best-selling-product-section mx-auto px-2 md:px-10 py-8">
         <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-center">
           <p className="text-red-700 mb-2">
             Failed to load Best Selling products
@@ -157,7 +157,7 @@ export default function BestSelling() {
   // No products state
   if (!products.length) {
     return (
-      <div className="best-selling-product-section container mx-auto px-4 py-8">
+      <div className="best-selling-product-section mx-auto px-2 md:px-10 py-8">
         <div className="text-center text-gray-600 py-12">
           No best selling products found.
         </div>
@@ -167,7 +167,7 @@ export default function BestSelling() {
 
   // Main render
   return (
-    <div className="best-selling-product-section container mx-auto px-4 py-8">
+    <div className="best-selling-product-section mx-auto px-2 md:px-10 py-8">
       {/* Header with View All button */}
       <div className="flex flex-col items-center justify-center text-center mb-6">
         <h1 className="md:text-3xl text-lg font-bold text-black uppercase">
@@ -188,15 +188,15 @@ export default function BestSelling() {
           pauseOnMouseEnter: true,
         }}
         spaceBetween={20}
-        slidesPerView={6}
+        slidesPerView={4}
         navigation={true}
         onSlideChange={handleSlideChange}
         breakpoints={{
-          320: { slidesPerView: 2, spaceBetween: 10 },
-          640: { slidesPerView: 3, spaceBetween: 15 },
-          768: { slidesPerView: 4, spaceBetween: 15 },
-          1024: { slidesPerView: 5, spaceBetween: 20 },
-          1280: { slidesPerView: 6, spaceBetween: 20 },
+          320: { slidesPerView: 2, spaceBetween: 10 }, // Keep 2 for mobile
+          640: { slidesPerView: 3, spaceBetween: 15 }, // Keep 3 for tablet
+          768: { slidesPerView: 4, spaceBetween: 15 }, // 4 items from tablet up
+          1024: { slidesPerView: 4, spaceBetween: 20 },
+          1280: { slidesPerView: 4, spaceBetween: 20 },
         }}
         className="best-selling-swiper"
       >
@@ -220,7 +220,7 @@ export default function BestSelling() {
       <div className="flex justify-center my-3">
         <Link
           href="/shop_page?sort=best-selling"
-          className="flex items-center gap-2 cursor-pointer bg-black text-white hover:underline px-10 py-2 hover:opacity-90 transition"
+          className="flex items-center gap-2 cursor-pointer bg-black text-white hover:underline px-2 md:px-10 py-2 hover:opacity-90 transition"
         >
           <span className="text-sm md:text-base">View All</span>
         </Link>

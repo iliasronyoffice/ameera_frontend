@@ -6,6 +6,8 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { openCartModal } from "@/store/slices/cartModalSlice";
 import WishlistButton from "../WishlistButton";
+import CartIcon from "../icons/CartIcon";
+import OutOfStock from "../icons/OutOfStock";
 
 export default function ProductCard1({ item, priority = false }) {
   const [imageError, setImageError] = useState(false);
@@ -96,29 +98,29 @@ export default function ProductCard1({ item, priority = false }) {
   const isOutOfStockFlag = isOutOfStock();
 
   return (
-    <div className="bg-white border border-[#F1F1FE] my-2 shadow-sm rounded-xl hover:shadow-2xl duration-300 relative group cursor-pointer">
+    <div className="bg-white border border-[#F1F1FE] my-2 shadow-sm hover:shadow-2xl duration-300 relative group cursor-pointer">
       <Link href={`/Products/${item.slug || item.id}`}>
         {/* Discount & New Badge */}
         {discount && !isOutOfStockFlag && (
-          <span className="absolute top-0 right-0 z-30 bg-red-500 text-white text-xs font-semibold px-4 py-2 rounded-tr-xl rounded-bl-2xl overflow-hidden">
+          <span className="absolute top-0 right-0 z-30 bg-red-500 text-white text-xs font-semibold px-4 py-2 overflow-hidden">
             {discount}
           </span>
         )}
 
         {/* Out of Stock Badge */}
         {isOutOfStockFlag && (
-          <span className="absolute top-0 right-0 z-30 bg-gray-500 text-white text-xs font-semibold px-4 py-2 rounded-tr-xl rounded-bl-2xl overflow-hidden">
+          <span className="absolute top-0 right-0 z-30 bg-gray-500 text-white text-xs font-semibold px-4 py-2 overflow-hidden">
             Out of Stock
           </span>
         )}
 
-        <div className="relative w-full h-[200px] md:h-[250px] 2xl:h-[260px] overflow-hidden bg-gray-50 rounded-t-xl">
+        <div className="relative w-full h-[230px] md:h-[330px] 2xl:h-[620px] overflow-hidden bg-gray-50">
           {!imageError ? (
             <Image
               src={item.thumbnail_image}
               alt={item.name || item.title || "Product"}
               fill
-              className="object-cover rounded-t-xl hover:scale-105 transition-transform duration-300"
+              className="object-cover hover:scale-105 transition-transform duration-300"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               onError={() => setImageError(true)}
               loading={priority ? "eager" : "lazy"}
@@ -144,82 +146,64 @@ export default function ProductCard1({ item, priority = false }) {
               </svg>
             </div>
           )}
+
+          {/* sales tag added here  */}
+          {item.sales_name && (
+            <div className="absolute bottom-4 left-4 text-black bg-white text-xs font-medium px-5 py-2">
+              {item.sales_name ?? ''}
+            </div>
+          )}
         </div>
 
         <div className="text-part 2xl:p-3 md:p-2 p-2">
-          <p className="text-[11px] text-gray-500">{getSalesCount()}</p>
-          <p className="text-[11px] text-purple-600 font-medium">
-            {getCategory()}
-          </p>
+          <p className="text-[11px] text-main font-medium">{getCategory()}</p>
 
-          <h4 className="text-[13px] font-semibold mt-1 h-10 overflow-hidden text-black">
-            {TruncateWords(item.name || item.title, 9)}
-          </h4>
+          <div className="flex justify-between items-center gap-2">
+            {/* Left side - Title and Price */}
+            <div className="flex flex-col gap-1 flex-1">
+              <h1 className="text-[13px] font-semibold mt-1 h-10 overflow-hidden text-black">
+                {TruncateWords(item.name || item.title, 9)}
+              </h1>
 
-          <div className="price-and-cart flex justify-between items-center mt-3">
-            {/* Price */}
-            <div className="flex items-center gap-1">
-              <span className="font-bold sm:text-[8px] md:text-[12px] 2xl:text-[15px] text-[11px] text-black">
-                {getMainPrice()}
-              </span>
-              {getStrokedPrice() && (
-                <span className="text-[8px] text-gray-400 line-through sm:text-[8px] md:text-[10px] 2xl:text-[12px]">
-                  {getStrokedPrice()}
+              <div className="flex items-center gap-1 mt-3">
+                <span className="font-bold sm:text-[8px] md:text-[12px] 2xl:text-[15px] text-[11px] text-black">
+                  {getMainPrice()}
                 </span>
-              )}
+                {getStrokedPrice() && (
+                  <span className="text-[8px] text-gray-400 line-through sm:text-[8px] md:text-[10px] 2xl:text-[12px]">
+                    {getStrokedPrice()}
+                  </span>
+                )}
+              </div>
             </div>
 
-            {/* Add Cart Button - Modified to open modal through Redux */}
+            {/* Right side - Cart Button - Now vertically centered */}
             <button
               onClick={handleAddToCartClick}
               disabled={isOutOfStockFlag}
-              className={`cursor-pointer flex items-center gap-1 text-white text-[12px] 2xl:text-[12px] md:text-[9px] lg:text-[12px] font-medium px-3 md:px-1 lg:px-3 2xl:px- py-1 rounded-md transition ${
-                isOutOfStockFlag ? "bg-second cursor-not-allowed" : "bg-main"
+              className={`cursor-pointer flex items-center gap-1 text-white text-[12px] 2xl:text-[12px] md:text-[9px] lg:text-[12px] font-medium px-3 md:px-2 lg:px-3 2xl:px-2 py-1 rounded-md transition ${
+                isOutOfStockFlag ? "cursor-not-allowed opacity-50" : ""
               }`}
             >
-              <svg
-                width="11"
-                height="9"
-                viewBox="0 0 11 9"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M8.47993 6.66277H4.48493C3.90882 6.66277 3.39801 6.28477 3.2421 5.74331L1.89178 1.16776C1.84381 1.00208 1.68435 0.888369 1.50223 0.888369H0.444185C0.326379 0.888369 0.213399 0.841571 0.130099 0.75827C0.0467979 0.67497 0 0.56199 0 0.444185C0 0.326379 0.0467979 0.213399 0.130099 0.130099C0.213399 0.046798 0.326379 0 0.444185 0H1.50223C2.07834 0 2.58871 0.378001 2.74462 0.919462L2.99736 1.77674H9.79116C10.0683 1.77674 10.3313 1.90866 10.4943 2.12986C10.5737 2.23636 10.6267 2.36017 10.6489 2.49114C10.6712 2.6221 10.662 2.75647 10.6222 2.8832L9.70588 5.79172C9.61839 6.04695 9.45303 6.26829 9.23309 6.42456C9.01315 6.58083 8.74972 6.66414 8.47993 6.66277ZM4.88603 8.88369C4.39609 8.88369 3.99766 8.48526 3.99766 7.99532C3.99766 7.50539 4.39609 7.10695 4.88603 7.10695C5.37597 7.10695 5.7744 7.50539 5.7744 7.99532C5.7744 8.48526 5.37597 8.88369 4.88603 8.88369ZM7.99532 8.88369C7.50539 8.88369 7.10695 8.48526 7.10695 7.99532C7.10695 7.50539 7.50539 7.10695 7.99532 7.10695C8.48526 7.10695 8.88369 7.50539 8.88369 7.99532C8.88369 8.48526 8.48526 8.88369 7.99532 8.88369Z"
-                  fill="white"
+              {isOutOfStockFlag ? (
+                <OutOfStock
+                  color="#000000"
+                  className="w-6 h-6 md:w-6 md:h-6 lg:w-7 lg:h-7 xl:w-8 xl:h-7"
                 />
-              </svg>
-              {isOutOfStockFlag ? "Out" : "Add"}
+              ) : (
+                <CartIcon width={25} height={25} color="#000000" />
+              )}
             </button>
           </div>
         </div>
 
         {/* Wishlist + Quick View Icons (remain the same) */}
         <div className="cursor-pointer absolute left-2 top-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 translate-x-[-5px] group-hover:translate-x-0 transition-all duration-300 z-40">
-         
           <WishlistButton
             productId={productId}
-            className="bg-white p-2 rounded-xl shadow-md hover:bg-gray-100 transition"
+            className="bg-white p-2 shadow-md hover:bg-gray-100 transition"
           />
 
-          <button className="bg-white p-2 rounded-xl shadow-md hover:bg-gray-100 transition">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path
-                d="M0.667969 7.9974C0.667969 7.9974 3.33464 2.66406 8.0013 2.66406C12.668 2.66406 15.3346 7.9974 15.3346 7.9974C15.3346 7.9974 12.668 13.3307 8.0013 13.3307C3.33464 13.3307 0.667969 7.9974 0.667969 7.9974Z"
-                stroke="#19073B"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M8 9.99805C9.10457 9.99805 10 9.10262 10 7.99805C10 6.89348 9.10457 5.99805 8 5.99805C6.89543 5.99805 6 6.89348 6 7.99805C6 9.10262 6.89543 9.99805 8 9.99805Z"
-                stroke="#19073B"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
         </div>
       </Link>
     </div>

@@ -57,7 +57,7 @@ export default function FeaturedCategory() {
   }
 
   return (
-    <div className="mx-auto px-10 py-8">
+    <div className="mx-auto px-2 md:px-10 py-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {categories.map((category) => (
           <div

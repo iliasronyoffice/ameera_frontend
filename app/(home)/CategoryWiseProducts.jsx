@@ -130,8 +130,8 @@ export default function CategoryWiseProducts() {
                     320: { slidesPerView: 2 },
                     640: { slidesPerView: 3 },
                     768: { slidesPerView: 4 },
-                    1024: { slidesPerView: 5 },
-                    1280: { slidesPerView: 6 },
+                    1024: { slidesPerView: 4 },
+                    1280: { slidesPerView: 4 },
                   }}
                   onSwiper={(swiper) =>
                     handleSlideChange(

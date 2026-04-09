@@ -100,8 +100,8 @@ export default function SellerFeaturedProducts({ shopId }) {
             breakpoints={{
               320: { slidesPerView: 2 },
               640: { slidesPerView: 3 },
-              1024: { slidesPerView: 5 },
-              1280: { slidesPerView: 6 },
+              1024: { slidesPerView: 4 },
+              1280: { slidesPerView: 4 },
             }}
             className="seller-featured-swiper"
           >

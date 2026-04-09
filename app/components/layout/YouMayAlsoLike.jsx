@@ -111,8 +111,8 @@ export default function YouMayAlsoLike({ currentProductId, category }) {
           breakpoints={{
             320: { slidesPerView: 2 },
             640: { slidesPerView: 3 },
-            1024: { slidesPerView: 5 },
-            1280: { slidesPerView: 6 },
+            1024: { slidesPerView: 4 },
+            1280: { slidesPerView: 4 },
           }}
           className="you-may-also-like-swiper"
         >
