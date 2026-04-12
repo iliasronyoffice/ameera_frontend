@@ -34,7 +34,7 @@ export default function LayoutDetector({ children }) {
       {children}
       <CartModal />
       <Toaster position="top-right" reverseOrder={false} />
-      <ServicePolicies />
+      
       <Footer />
     </>
   );

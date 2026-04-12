@@ -170,7 +170,7 @@ export default function BestSelling() {
     <div className="best-selling-product-section mx-auto px-2 md:px-10 py-8">
       {/* Header with View All button */}
       <div className="flex flex-col items-center justify-center text-center mb-6">
-        <h1 className="md:text-3xl text-lg font-bold text-black uppercase">
+        <h1 className="md:text-3xl text-lg text-black uppercase">
           Best Selling
         </h1>
         <span className="text-sm">
@@ -220,7 +220,7 @@ export default function BestSelling() {
       <div className="flex justify-center my-3">
         <Link
           href="/shop_page?sort=best-selling"
-          className="flex items-center gap-2 cursor-pointer bg-black text-white hover:underline px-2 md:px-10 py-2 hover:opacity-90 transition"
+          className="flex items-center gap-2 cursor-pointer bg-black text-white hover:underline px-5 md:px-10 py-2 hover:opacity-90 transition"
         >
           <span className="text-sm md:text-base">View All</span>
         </Link>

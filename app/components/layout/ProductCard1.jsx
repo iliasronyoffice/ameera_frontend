@@ -149,7 +149,7 @@ export default function ProductCard1({ item, priority = false }) {
 
           {/* sales tag added here  */}
           {item.sales_name && (
-            <div className="absolute bottom-4 left-4 text-black bg-white text-xs font-medium px-5 py-2">
+            <div className="absolute bottom-4 left-4 text-black bg-white text-xs font-medium px-3 py-1 md:px-5 md:py-2">
               {item.sales_name ?? ''}
             </div>
           )}

@@ -19,7 +19,7 @@ export default function ThirdBanner() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 mt-8 mb-14">
+      <div className="px-0 mt-8 mb-14">
         <div className="grid grid-cols-3 gap-5">
           {[1, 2, 3].map((item) => (
             <div 
@@ -35,7 +35,7 @@ export default function ThirdBanner() {
   if (error && (!banners || banners.length === 0)) {
     console.warn("Error fetching banners:", error);
     return (
-      <div className="container mx-auto px-4 mt-8 mb-14">
+      <div className="mx-auto px-0 mt-8 mb-14">
         <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 p-4 rounded-lg text-center">
           <p>Unable to load banners. Please try again later.</p>
         </div>
@@ -50,12 +50,12 @@ export default function ThirdBanner() {
   // Single banner layout
   if (banners.length === 1) {
     return (
-      <div className="container mx-auto px-4 mt-8 mb-2 md:mb-8">
+      <div className="mx-auto px-0 mt-8 mb-2 md:mb-8">
         <a 
           href={banners[0].url || '#'} 
           target="_blank" 
           rel="noopener noreferrer"
-          className="block rounded-xl overflow-hidden h-[100px] md:h-[400px] group"
+          className="block overflow-hidden h-[150px] md:h-[600px] group"
         >
           <div className="relative w-full h-full bg-gray-100">
             {/* Blur placeholder while loading */}
@@ -90,7 +90,7 @@ export default function ThirdBanner() {
             href={banner.url || '#'} 
             target="_blank" 
             rel="noopener noreferrer"
-            className={`banner${index + 1} rounded-xl overflow-hidden h-[100px] md:h-[250px] group`}
+            className={`banner${index + 1} overflow-hidden h-[100px] md:h-[250px] group`}
           >
             <div className="relative w-full h-full bg-gray-100">
               {/* Show placeholder until image loads */}

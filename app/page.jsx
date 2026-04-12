@@ -10,6 +10,9 @@ import CategoryWiseProducts from "./(home)/CategoryWiseProducts";
 import ThirdBanner from "./(home)/ThirdBanner";
 import FeaturedCategory from "./(home)/FeaturedCategory";
 import BestSelling from "./(home)/BestSelling";
+import ShopByCategory from "./(home)/ShopByCategory";
+import WatchAndBuy from "./(home)/WatchAndBuy";
+import ServicePolicies from "./(home)/ServicePolicies";
 
 
 export default async function Home() {
@@ -20,12 +23,15 @@ export default async function Home() {
       <BestSelling />
       {/* <FeaturedProducts /> */}
       {/* <BestDeals></BestDeals> */}
-      <SecondBanner />
-      <JustForYou />
-      <ThirdBanner />
-      <CategoryWiseProducts/>
+      {/* <SecondBanner /> */}
+      {/* <JustForYou /> */}
+      <ShopByCategory />
+      <WatchAndBuy />
+      {/* <CategoryWiseProducts/> */}
       {/* <TopSellers /> */}
       <OurBrands />
+      <ServicePolicies />
+      <ThirdBanner />
     </div>
   );
 }
