@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import SocialIcons from "../SocialIcons";
+
 
 export default function Footer() {
   const [footerData, setFooterData] = useState(null);
@@ -31,7 +33,7 @@ export default function Footer() {
 
   if (loading) {
     return (
-      <footer className="bg-footer text-gray-300 py-10 text-center">
+      <footer className="bg-footer py-10 text-center">
         Loading footer...
       </footer>
     );
@@ -40,25 +42,40 @@ export default function Footer() {
   if (!footerData) return null;
 
   return (
-    <footer className="bg-footer text-gray-300">
+    <footer className="bg-footer">
       {/* ===== Top Footer ===== */}
       <div className="px-3 md:px-5 py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
         {/* Logo & Description */}
         <div>
+          {/* Logo with rounded full */}
           {footerData.logo && (
-            <Link href="/" className="block">
-              <Image
-                src={footerData.logo}
-                alt="Logo"
-                width={180}
-                height={50}
-                style={{ width: "auto", height: "auto", maxWidth: "10rem" }}
-                className="object-contain md:max-w-[9rem] lg:max-w-[10rem]"
-                unoptimized
-              />
+            <Link href="/" className="block w-30 h-20 md:w-40 md:h-30 rounded-full overflow-hidden bg-white flex items-center justify-center">
+              <div className="relative w-full h-full">
+                <Image
+                  src={footerData.logo}
+                  alt="Logo"
+                  fill
+                  className="object-contain p-2"
+                  unoptimized
+                />
+              </div>
             </Link>
           )}
           <p className="mt-4 text-sm">{footerData.footer_description}</p>
+          
+          {/* Social Links Section */}
+          {footerData.show_social_links && (
+            <div className="mt-6">
+              {/* <h5 className="text-xs font-semibold text-white uppercase mb-3">
+                Follow Us On :
+              </h5> */}
+              <SocialIcons 
+                socialLinks={footerData.social_links} 
+                className="w-4 h-4"
+                gap="gap-6"
+              />
+            </div>
+          )}
         </div>
 
         {/* Company Menu */}
@@ -67,7 +84,7 @@ export default function Footer() {
           <ul className="space-y-2 text-sm">
             {footerData.company_menu?.map((item, idx) => (
               <li key={idx}>
-                <Link href={`/pages${item.link}`} className="hover:text-white">
+                <Link href={`/pages${item.link}`} className="hover:underline">
                   {item.label}
                 </Link>
               </li>
@@ -81,7 +98,7 @@ export default function Footer() {
           <ul className="space-y-2 text-sm">
             {footerData.useful_links_menu?.map((item, idx) => (
               <li key={idx}>
-                <Link href={`/pages${item.link}`} className="hover:text-white">
+                <Link href={`/pages${item.link}`} className="hover:underline">
                   {item.label}
                 </Link>
               </li>
@@ -94,32 +111,32 @@ export default function Footer() {
           <h3 className="font-semibold mb-4">My Account</h3>
           <ul className="space-y-2 text-sm">
             <li>
-              <Link href="/" className="hover:text-white">
+              <Link href="/" className="hover:underline">
                 Login
               </Link>
             </li>
             <li>
-              <Link href="/" className="hover:text-white">
+              <Link href="/" className="hover:underline">
                 Order History
               </Link>
             </li>
             <li>
-              <Link href="/wishlist" className="hover:text-white">
+              <Link href="/wishlist" className="hover:underline">
                 My Wishlist
               </Link>
             </li>
             <li>
-              <Link href="/track-order" className="hover:text-white">
+              <Link href="/track-order" className="hover:underline">
                 Track Order
               </Link>
             </li>
             <li>
-              <Link href="/" className="hover:text-white">
+              <Link href="/" className="hover:underline">
                 Affiliate Partner
               </Link>
             </li>
             <li>
-              <Link href="/blogs" className="hover:text-white">
+              <Link href="/blogs" className="hover:underline">
                 Blog
               </Link>
             </li>
@@ -155,7 +172,6 @@ export default function Footer() {
             {/* Phone */}
             <li className="flex items-center gap-3">
               <span className="text-white">
-                {" "}
                 <span className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
                   <svg
                     width="24"
@@ -172,10 +188,7 @@ export default function Footer() {
                   </svg>
                 </span>
               </span>
-              <Link
-                href={`tel:${footerData.contact_phone}`}
-                className="hover:text-white"
-              >
+              <Link href={`tel:${footerData.contact_phone}`} className="hover:underline">
                 {footerData.contact_phone}
               </Link>
             </li>
@@ -203,10 +216,7 @@ export default function Footer() {
                   </svg>
                 </span>
               </span>
-              <Link
-                href={`mailto:${footerData.contact_email}`}
-                className="hover:text-white"
-              >
+              <Link href={`mailto:${footerData.contact_email}`} className="hover:underline">
                 {footerData.contact_email}
               </Link>
             </li>
@@ -215,10 +225,10 @@ export default function Footer() {
       </div>
 
       {/* ===== Bottom Footer ===== */}
-      <div className="border-t border-gray-700 text-center text-sm flex flex-col lg:flex-row justify-between items-center gap-4 px-5 py-4">
-        {/* Copyright - Updated to render HTML */}
+      <div className="border-t border-gray-300 text-center text-sm flex flex-col lg:flex-row justify-between items-center gap-4 px-5 py-3 md:py-0">
+        {/* Copyright */}
         <div
-          className="text-white"
+          className=""
           dangerouslySetInnerHTML={{ __html: footerData.copyright || "" }}
         />
 
