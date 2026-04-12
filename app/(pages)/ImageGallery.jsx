@@ -15,10 +15,10 @@ export default function ImageGallery({ galleryImages }) {
 
   const selectedImage = galleryImages[selectedIndex];
 
-  const scrollLeft = () =>
-    swiperRef.current?.scrollBy({ left: -300, behavior: "smooth" });
-  const scrollRight = () =>
-    swiperRef.current?.scrollBy({ left: 300, behavior: "smooth" });
+  const scrollUp = () =>
+    swiperRef.current?.scrollBy({ top: -150, behavior: "smooth" });
+  const scrollDown = () =>
+    swiperRef.current?.scrollBy({ top: 150, behavior: "smooth" });
 
   const handleMouseDown = (e) => {
     dragging.current = true;
@@ -69,113 +69,112 @@ export default function ImageGallery({ galleryImages }) {
 
   return (
     <div className="lg:col-span-5 relative">
-      <div
-        className="border relative border-gray-100 rounded-2xl overflow-hidden shadow-sm group  w-full h-[370px] md:h-[500px] 2xl:h-[600px]"
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        onMouseMove={handleMouseMove}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      >
-        {/* <Image
-          src={selectedImage.src}
-          alt={selectedImage.alt}
-          width={600}
-          height={600}
-          className="object-contain w-full h-[220px] md:h-[400px] 2xl:h-[500px] transition-all duration-300"
-          onMouseEnter={() => setZoom(true)}
-          onMouseLeave={() => setZoom(false)}
-          unoptimized // Add this for external URLs
-        /> */}
-
-       <Image
-        src={selectedImage.src}
-        alt={selectedImage.alt}
-        fill
-        className="object-cover transition-all duration-300"
-        onMouseEnter={() => setZoom(true)}
-        onMouseLeave={() => setZoom(false)}
-        unoptimized
-      />
-
-        {zoom && (
+      <div className="flex gap-4">
+        {/* Thumbnail Gallery - Left Side (Y-axis) */}
+        <div className="relative w-24 md:w-28">
           <div
-            className="absolute inset-0 pointer-events-none bg-no-repeat bg-contain"
-            style={{
-              backgroundImage: `url(${selectedImage.src})`,
-              backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
-              backgroundSize: "200%",
-            }}
-          ></div>
-        )}
-      </div>
+            ref={swiperRef}
+            className="flex flex-col gap-3 overflow-y-auto scrollbar-hide scroll-smooth max-h-[370px] md:max-h-[500px] 2xl:max-h-[600px]"
+          >
+            {galleryImages.map((img, index) => (
+              <div
+                key={img.id}
+                className={`flex-shrink-0 w-20 h-20 md:w-24 md:h-24 border-2 cursor-pointer overflow-hidden transition-all duration-300 ${
+                  index === selectedIndex
+                    ? "border-main shadow-md"
+                    : "border-gray-200 hover:border-main"
+                }`}
+                onClick={() => setSelectedIndex(index)}
+              >
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  width={100}
+                  height={100}
+                  className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
+                  unoptimized
+                />
+              </div>
+            ))}
+          </div>
 
-      <div className="relative mt-4">
-        <div
-          ref={swiperRef}
-          className="flex gap-3 overflow-x-auto scrollbar-hide scroll-smooth px-2"
-        >
-          {galleryImages.map((img, index) => (
-            <div
-              key={img.id}
-              className={`flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-xl border-2 cursor-pointer overflow-hidden transition-all duration-300 ${
-                index === selectedIndex
-                  ? "border-main shadow-md"
-                  : "border-gray-200 hover:main"
-              }`}
-              onClick={() => setSelectedIndex(index)}
-            >
-              <Image
-                src={img.src}
-                alt={img.alt}
-                width={100}
-                height={100}
-                className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
-                unoptimized
-              />
-            </div>
-          ))}
+          {/* Scroll buttons for vertical navigation */}
+          {galleryImages.length > 4 && (
+            <>
+              <button
+                onClick={scrollUp}
+                className="absolute -top-2 left-1/2 -translate-x-1/2 bg-white border border-gray-300 hover:border-main hover:bg-purple-50 rounded-full w-8 h-8 flex items-center justify-center shadow-md transition-all duration-300 hover:scale-110"
+              >
+                <svg
+                  className="w-4 h-4 text-gray-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 15l7-7 7 7"
+                  />
+                </svg>
+              </button>
+
+              <button
+                onClick={scrollDown}
+                className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white border border-gray-300 hover:border-main hover:bg-purple-50 rounded-full w-8 h-8 flex items-center justify-center shadow-md transition-all duration-300 hover:scale-110"
+              >
+                <svg
+                  className="w-4 h-4 text-gray-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+            </>
+          )}
         </div>
 
-        <button
-          onClick={scrollLeft}
-          className="absolute -left-0 top-1/2 -translate-y-1/2 bg-white border border-gray-300 hover:border-main hover:bg-purple-50 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-all duration-300 hover:scale-110"
+        {/* Main Image */}
+        <div
+          className="border relative border-gray-100 overflow-hidden shadow-sm group flex-1 w-full h-[370px] md:h-[500px] 2xl:h-[600px]"
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
         >
-          <svg
-            className="w-5 h-5 text-gray-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-        </button>
+          <Image
+            src={selectedImage.src}
+            alt={selectedImage.alt}
+            fill
+            className="object-cover transition-all duration-300"
+            onMouseEnter={() => setZoom(true)}
+            onMouseLeave={() => setZoom(false)}
+            unoptimized
+          />
 
-        <button
-          onClick={scrollRight}
-          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white border border-gray-300 hover:border-main hover:bg-main rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-all duration-300 hover:scale-110"
-        >
-          <svg
-            className="w-5 h-5 text-gray-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </button>
+          {zoom && (
+            <div
+              className="absolute inset-0 pointer-events-none bg-no-repeat bg-contain"
+              style={{
+                backgroundImage: `url(${selectedImage.src})`,
+                backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
+                backgroundSize: "200%",
+              }}
+            ></div>
+          )}
+        </div>
       </div>
 
+      {/* Share Link */}
       <Link
         href="#"
         onClick={(e) => {

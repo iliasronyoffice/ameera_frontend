@@ -206,13 +206,13 @@ export default function BuyNowButton({
     <button
       onClick={handleBuyNow}
       disabled={isButtonDisabled}
-      className={`group w-full flex items-center justify-center gap-2 border px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-[1.04] hover:shadow-lg active:scale-95 ${
+      className={`group w-full flex items-center justify-center gap-2 border px-6 py-2 font-medium transition-all duration-300 transform hover:scale-[1.04] hover:shadow-lg active:scale-95 ${
         isButtonDisabled
-          ? "bg-gray-300 border-gray-300 text-gray-600 cursor-not-allowed hover:scale-100 hover:shadow-none"
+          ? "bg-gray-300 text-gray-600 cursor-not-allowed hover:scale-100 hover:shadow-none"
           : "bg-main hover:bg-main-hov hover:text-black text-white cursor-pointer"
       }`}
     >
-      <span className="flex items-center justify-center rounded-lg transition">
+      <span className="flex items-center justify-center transition">
         {loading ? (
           <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
             <circle

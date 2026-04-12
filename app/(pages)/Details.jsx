@@ -140,7 +140,7 @@ export default function Details({ productData }) {
 
                <WishlistButton 
                   productId={productData.id}
-                  className="bg-white p-2 rounded-lg shadow-md hover:bg-gray-100 transition border"
+                  className="bg-white p-2 shadow-md hover:bg-gray-100 transition border"
                 />
             </div>
           </div>
@@ -157,7 +157,7 @@ export default function Details({ productData }) {
                 <del className="text-lg text-gray-500">
                   {productData.stroked_price}
                 </del>
-                <span className="text-red-600 font-semibold bg-red-50 px-2 py-1 rounded-lg">
+                <span className="text-red-600 font-semibold bg-red-50 px-2 py-1">
                   {productData.discount}
                 </span>
               </>
@@ -170,7 +170,7 @@ export default function Details({ productData }) {
               <label className="text-sm font-medium text-gray-700 w-16">
                 Brand:
               </label>
-              <span className="text-gray-800 bg-gray-100 px-3 py-1 rounded-lg">
+              <span className="text-gray-800 bg-gray-100 px-3 py-1">
                 {productData.brand.name}
               </span>
             </div>
@@ -237,7 +237,7 @@ export default function Details({ productData }) {
                         isInStock && setSelectedVariant(variantValue)
                       }
                       disabled={!isInStock}
-                      className={`cursor-pointer px-4 py-2 border-2 rounded-xl text-sm font-medium transition-all duration-200 transform hover:scale-105 ${
+                      className={`cursor-pointer px-4 py-2 border-2 text-sm font-medium transition-all duration-200 transform hover:scale-105 ${
                         !isInStock
                           ? "border-gray-300 text-gray-400 cursor-not-allowed bg-gray-50"
                           : selectedVariant === variantValue
@@ -268,9 +268,9 @@ export default function Details({ productData }) {
                 Quantity:
               </label>
               <div className="qty-addto-cart flex items-center gap-4 mb-6 mt-3">
-                <div className="qty border border-main bg-white rounded-lg flex items-center shadow-sm">
+                <div className="qty border border-main bg-white flex items-center shadow-sm">
                   <button
-                    className="cursor-pointer px-4 py-1 text-gray-600 hover:text-purple-700 hover:bg-purple-50 rounded-l-xl transition-colors"
+                    className="cursor-pointer px-4 py-1 text-gray-600  hover:bg-purple-50 transition-colors"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     disabled={quantity <= 1}
                   >
@@ -280,7 +280,7 @@ export default function Details({ productData }) {
                     {quantity}
                   </span>
                   <button
-                    className="cursor-pointer px-4 py-1 text-gray-600 hover:text-purple-700 hover:bg-purple-50 rounded-r-xl transition-colors"
+                    className="cursor-pointer px-4 py-1 text-gray-600 hover:text-purple-700 hover:bg-purple-50 transition-colors"
                     onClick={() =>
                       setQuantity(Math.min(currentStock, quantity + 1))
                     }
@@ -352,7 +352,7 @@ export default function Details({ productData }) {
           ) : (
             <div className="buy-now w-full">
               <button
-                className="bg-second text-white w-full py-2 rounded-lg font-medium cursor-not-allowed block text-center shadow-md"
+                className="bg-second text-white w-full py-2 font-medium cursor-not-allowed block text-center shadow-md"
                 disabled
               >
                 Out of Stock
@@ -374,7 +374,7 @@ export default function Details({ productData }) {
 
           {/* Low stock warning */}
           {!isOutOfStock && currentStock <= 5 && (
-            <div className="mt-2 text-sm text-orange-600 bg-orange-50 p-2 rounded-lg">
+            <div className="mt-2 text-sm text-orange-600 bg-orange-50 p-2">
               ⚠️ Only {currentStock} units left in stock. Order soon!
             </div>
           )}

@@ -62,6 +62,8 @@ const LoadingSkeleton = () => (
 );
 
 export default function Header() {
+
+  
   const pathname = usePathname();
   const isHomePage = pathname === "/";
   const dispatch = useAppDispatch();
@@ -121,6 +123,14 @@ export default function Header() {
       document.body.style.width = "unset";
     };
   }, [showSearchModal]);
+
+  // In your Header component
+useEffect(() => {
+  const header = document.querySelector('header');
+  if (header) {
+    document.documentElement.style.setProperty('--header-height', `${header.offsetHeight}px`);
+  }
+}, []);
 
   // Add escape key handler
   useEffect(() => {
