@@ -55,7 +55,7 @@ export default function Footer() {
                   src={footerData.logo}
                   alt="Logo"
                   fill
-                  className="object-contain p-2"
+                  className="object-contain"
                   unoptimized
                 />
               </div>

@@ -185,7 +185,7 @@ export default function FloatingVideoPlayer({ videoUrl, productName, productData
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className={`
-        bg-black rounded-lg shadow-2xl overflow-hidden
+        bg-main rounded-lg shadow-2xl overflow-hidden
         transition-all duration-300
         ${isMinimized ? 'w-48 h-10' : 'w-40 md:w-40'}
         border border-gray-700
@@ -231,10 +231,10 @@ export default function FloatingVideoPlayer({ videoUrl, productName, productData
 
         {/* Video Player */}
         {!isMinimized && (
-          <div className="relative bg-black">
+          <div className="relative bg-main">
             {/* Loading Indicator */}
             {!isVideoReady && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10">
+              <div className="absolute inset-0 flex items-center justify-center bg-main/50 z-10">
                 <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               </div>
             )}
@@ -242,7 +242,7 @@ export default function FloatingVideoPlayer({ videoUrl, productName, productData
             {/* Play Button Overlay (for when auto-play is blocked) */}
             {!isPlaying && isVideoReady && (
               <div 
-                className="absolute inset-0 flex items-center justify-center bg-black/50 cursor-pointer z-10"
+                className="absolute inset-0 flex items-center justify-center bg-main/50 cursor-pointer z-10"
                 onClick={handleManualPlay}
               >
                 <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
@@ -263,7 +263,7 @@ export default function FloatingVideoPlayer({ videoUrl, productName, productData
                 loop
                 playsInline
                 className="w-full h-auto max-h-50"
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", objectFit: "cover" }}
                 onTimeUpdate={updateProgress}
                 onCanPlay={() => setIsVideoReady(true)}
                 onPlay={() => {
@@ -278,8 +278,8 @@ export default function FloatingVideoPlayer({ videoUrl, productName, productData
               />
               
               {/* Modal indicator overlay */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity bg-black/40 pointer-events-none">
-                <div className="bg-black/80 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity bg-main/40 pointer-events-none">
+                <div className="bg-main/80 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
                   <IoExpand size={12} />
                   <span>Click to expand</span>
                 </div>

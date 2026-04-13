@@ -33,32 +33,70 @@ import { usePathname } from "next/navigation";
 import TopHeader from "../TopHeader";
 
 // Loading Skeleton Component
+// Loading Skeleton Component - Perfectly designed
 const LoadingSkeleton = () => (
-  <header className="bg-transparent text-white sticky top-0 z-50 shadow-md">
-    <div className="flex items-center justify-between px-2 py-1 lg:p-2">
-      {/* Logo Skeleton */}
-      <div className="flex-shrink-0">
-        <div className="w-20 h-auto sm:w-28 md:w-32 lg:w-40">
-          <div
-            className="bg-gray-700 animate-pulse rounded"
-            style={{ height: "60px" }}
-          />
+  <div className="fixed top-0 left-0 w-full z-50">
+    {/* Top Header Skeleton */}
+    <div className="w-full bg-gray-800 h-10 animate-pulse">
+      <div className="container mx-auto h-full flex items-center justify-between px-4">
+        <div className="w-32 h-4 bg-gray-700 rounded"></div>
+        <div className="w-40 h-4 bg-gray-700 rounded"></div>
+        <div className="w-24 h-4 bg-gray-700 rounded"></div>
+      </div>
+    </div>
+
+    {/* Main Header Skeleton */}
+    <header className="w-full bg-white shadow-md">
+      <div className="flex items-center justify-between px-4 py-3 lg:px-6">
+        {/* Left Side - Category Button */}
+        <div className="search-part">
+          <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse"></div>
+        </div>
+
+        {/* Logo Skeleton */}
+        <div className="flex-shrink-0">
+          <div className="w-[75px] md:w-[120px] lg:w-[140px] h-[40px] bg-gray-200 rounded animate-pulse"></div>
+        </div>
+
+        {/* Right Side Navigation Skeleton */}
+        <div className="flex items-center justify-end gap-3 lg:gap-6">
+          {/* Search Icon */}
+          <div className="w-5 h-5 md:w-6 md:h-6 bg-gray-200 rounded-full animate-pulse"></div>
+          
+          {/* User Section */}
+          <div className="relative">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 md:w-10 md:h-10 bg-gray-200 rounded-full animate-pulse"></div>
+              <div className="hidden lg:block">
+                <div className="w-16 h-3 bg-gray-200 rounded animate-pulse mb-1"></div>
+                <div className="w-12 h-4 bg-gray-200 rounded animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Wishlist Icon */}
+          <div className="relative">
+            <div className="w-5 h-5 md:w-6 md:h-6 bg-gray-200 rounded-full animate-pulse"></div>
+          </div>
+
+          {/* Cart Icon */}
+          <div className="relative">
+            <div className="hidden md:block w-5 h-5 md:w-6 md:h-6 bg-gray-200 rounded-full animate-pulse"></div>
+            <div className="md:hidden w-4 h-4 bg-gray-200 rounded-full animate-pulse"></div>
+          </div>
         </div>
       </div>
 
-      {/* Search Bar Skeleton - Desktop */}
-      <div className="hidden md:flex flex-1 max-w-3xl mx-4">
-        <div className="w-full bg-gray-700 h-10 rounded-md animate-pulse" />
+      {/* Bottom Navigation Skeleton - Optional if you have bottom nav */}
+      <div className="hidden lg:block px-4 py-3 border-t border-gray-100">
+        <div className="flex items-center gap-4 overflow-x-hidden">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="w-20 h-4 bg-gray-200 rounded animate-pulse"></div>
+          ))}
+        </div>
       </div>
-
-      {/* Right Side Skeleton */}
-      <div className="flex items-center gap-3 lg:gap-6">
-        <div className="w-8 h-8 bg-gray-700 rounded-full animate-pulse" />
-        <div className="w-6 h-6 bg-gray-700 rounded-full animate-pulse" />
-        <div className="w-6 h-6 bg-gray-700 rounded-full animate-pulse" />
-      </div>
-    </div>
-  </header>
+    </header>
+  </div>
 );
 
 export default function Header() {

@@ -28,7 +28,7 @@
 //             />
 
 //             {/* Dark overlay */}
-//             <div className="absolute inset-0 bg-black/20"></div>
+//             <div className="absolute inset-0 bg-main/20"></div>
 
 //             {/* Play Button */}
 //             <div

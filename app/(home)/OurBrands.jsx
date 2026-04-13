@@ -113,7 +113,7 @@ export default function OurBrands() {
         {/* Bottom Indicator Line */}
         <div className="w-full h-[3px] bg-gray-200 mt-6 rounded-2xl">
           <div
-            className="h-full bg-black w-0 rounded-2xl transition-all duration-300"
+            className="h-full bg-main w-0 rounded-2xl transition-all duration-300"
             style={{ width: `${progress}%` }}
           ></div>
         </div>

@@ -125,7 +125,7 @@ export default function YouMayAlsoLike({ currentProductId, category }) {
 
         {/* Bottom Indicator Line */}
         <div className="w-full h-[2px] bg-gray-200 mt-6">
-          <div id="you-make-also-like-progress" className="h-full bg-black w-0"></div>
+          <div id="you-make-also-like-progress" className="h-full bg-main w-0"></div>
         </div>
       </div>
     </div>

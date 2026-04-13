@@ -115,7 +115,7 @@ export default function SellerFeaturedProducts({ shopId }) {
           <div className="w-full h-[2px] bg-gray-200 mt-6 relative">
             <div
               id="seller-featured-progress"
-              className="h-full bg-black w-0 transition-all duration-300"
+              className="h-full bg-main w-0 transition-all duration-300"
             ></div>
           </div>
         </>

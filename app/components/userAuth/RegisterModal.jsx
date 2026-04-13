@@ -138,7 +138,7 @@ export default function RegisterModal({ open, onClose, onSwitch, onRegisterSucce
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[999]">
+    <div className="fixed inset-0 bg-main/60 flex items-center justify-center z-[999]">
       <div className="bg-gradient-to-b from-[#EBEBFE] to-white w-80 2xl:w-[28%] md:w-[40%] lg:w-[40%] rounded-2xl p-6 relative max-h-[90vh] overflow-y-auto">
         {/* Close */}
         <button

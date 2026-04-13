@@ -158,7 +158,7 @@ export default function CategoryWiseProducts() {
                 {/* Bottom progress bar */}
                 <div className="w-full h-[2px] bg-gray-200 mt-6">
                   <div
-                    className="h-full bg-black transition-all duration-300"
+                    className="h-full bg-main transition-all duration-300"
                     style={{ width: `${progressMap[category.id] || 0}%` }}
                   ></div>
                 </div>

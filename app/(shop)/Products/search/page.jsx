@@ -170,7 +170,7 @@ export default function Search() {
 
         {/* ======= Mobile Slide-in Sidebar ======= */}
         {showFilter && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-end lg:hidden">
+          <div className="fixed inset-0 bg-main bg-opacity-40 z-50 flex justify-end lg:hidden">
             <div className="bg-white w-4/5 h-full shadow-xl p-4 animate-slideIn overflow-y-auto">
               <div className="flex items-center justify-between mb-4 border-b pb-2">
                 <h3 className="text-lg font-semibold text-gray-800">

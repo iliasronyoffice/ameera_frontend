@@ -28,7 +28,7 @@ export default function VideoCard({ item }) {
             alt={item.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
-          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all"></div>
+          <div className="absolute inset-0 bg-main/30 group-hover:bg-main/20 transition-all"></div>
 
           {/* Play Button */}
           <div className="absolute inset-0 flex items-center justify-center">
@@ -38,7 +38,7 @@ export default function VideoCard({ item }) {
           </div>
 
           {/* View Count */}
-          {/* <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1 backdrop-blur-sm">
+          {/* <div className="absolute bottom-2 left-2 bg-main/60 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1 backdrop-blur-sm">
             <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
             </svg>

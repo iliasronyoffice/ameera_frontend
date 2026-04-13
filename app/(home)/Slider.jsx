@@ -200,7 +200,7 @@ export default function Slider() {
             {/* <button
               ref={prevRef}
               aria-label="Previous slide"
-              className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-[30px] h-[30px] lg:w-[40px] lg:h-[40px] bg-black/40 hover:bg-black/60 rounded-full flex items-center justify-center text-white transition-all duration-200"
+              className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-[30px] h-[30px] lg:w-[40px] lg:h-[40px] bg-main/40 hover:bg-main/60 rounded-full flex items-center justify-center text-white transition-all duration-200"
               type="button"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -217,7 +217,7 @@ export default function Slider() {
             <button
               ref={nextRef}
               aria-label="Next slide"
-              className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-[30px] h-[30px] lg:w-[40px] lg:h-[40px] bg-black/40 hover:bg-black/60 rounded-full flex items-center justify-center text-white transition-all duration-200"
+              className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-[30px] h-[30px] lg:w-[40px] lg:h-[40px] bg-main/40 hover:bg-main/60 rounded-full flex items-center justify-center text-white transition-all duration-200"
               type="button"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none">

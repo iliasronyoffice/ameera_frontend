@@ -65,30 +65,29 @@ export default function FeaturedCategory() {
             className="bg-white shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
           >
             {/* Banner Image */}
-            <div className="relative w-full bg-gray-100">
-              <img
-                src={category.banner}
-                alt={category.name}
-                className="w-full h-[400px] md:h-[700px] xl:h-[800px] 2xl:h-[890px] object-cover"
-                onError={(e) => {
-                  e.target.src =
-                    "https://via.placeholder.com/400x300?text=No+Image";
-                  e.target.onerror = null; // Prevent infinite loop
-                }}
-              />
+            <Link href={`/shop_page?category=${category.id}`} className="block">
+              <div className="relative w-full bg-gray-100">
+                <img
+                  src={category.banner}
+                  alt={category.name}
+                  className="w-full h-[400px] md:h-[700px] xl:h-[800px] 2xl:h-[890px] object-cover"
+                  onError={(e) => {
+                    e.target.src =
+                      "https://via.placeholder.com/400x300?text=No+Image";
+                    e.target.onerror = null;
+                  }}
+                />
 
-              <div className="absolute bottom-8 left-10">
-                <h2 className="text-white text-xl md:text-4xl bg-opacity-50 py-1 pb-8 uppercase">
-                  {category.name}
-                </h2>
-                <Link
-                  href={`/shop?category=${category.id}`}
-                  className="bg-white text-black uppercase text-xl md:text-xl bg-opacity-50 px-3 py-1"
-                >
-                  Shop Now
-                </Link>
+                <div className="absolute bottom-8 left-10">
+                  <h2 className="text-white text-xl md:text-4xl bg-opacity-50 py-1 pb-8 uppercase">
+                    {category.name}
+                  </h2>
+                  <span className="bg-white text-black uppercase text-xl md:text-xl bg-opacity-50 px-3 py-1 inline-block">
+                    Shop Now
+                  </span>
+                </div>
               </div>
-            </div>
+            </Link>
           </div>
         ))}
       </div>

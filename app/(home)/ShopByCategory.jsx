@@ -241,7 +241,7 @@ export default function ShopByCategory() {
       {/* Products Grid */}
       {!loading && !categoriesLoading && !error && (
         <>
-          <div className="grid grid-cols-2 2xl:grid-cols-4 lg:grid-cols-4 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 2xl:grid-cols-4 lg:grid-cols-4 md:grid-cols-4 gap-8">
             {visibleProducts.map((item, index) => (
               <ProductCard1 key={item.id} item={item} priority={index < 6}/>
             ))}

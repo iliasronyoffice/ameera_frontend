@@ -187,7 +187,7 @@ export default function BestSelling() {
           disableOnInteraction: false,
           pauseOnMouseEnter: true,
         }}
-        spaceBetween={20}
+        spaceBetween={40}
         slidesPerView={4}
         navigation={true}
         onSlideChange={handleSlideChange}
@@ -195,8 +195,8 @@ export default function BestSelling() {
           320: { slidesPerView: 2, spaceBetween: 10 }, // Keep 2 for mobile
           640: { slidesPerView: 3, spaceBetween: 15 }, // Keep 3 for tablet
           768: { slidesPerView: 4, spaceBetween: 15 }, // 4 items from tablet up
-          1024: { slidesPerView: 4, spaceBetween: 20 },
-          1280: { slidesPerView: 4, spaceBetween: 20 },
+          1024: { slidesPerView: 4, spaceBetween: 30 },
+          1280: { slidesPerView: 4, spaceBetween: 30 },
         }}
         className="best-selling-swiper"
       >
@@ -211,7 +211,7 @@ export default function BestSelling() {
       {products.length > 6 && (
         <div className="w-full h-[2px] bg-gray-200 mt-8 rounded-full overflow-hidden">
           <div
-            className="h-full bg-black transition-all duration-300 ease-out rounded-full"
+            className="h-full bg-main transition-all duration-300 ease-out rounded-full"
             style={{ width: `${swiperProgress}%` }}
           ></div>
         </div>
@@ -220,7 +220,7 @@ export default function BestSelling() {
       <div className="flex justify-center my-3">
         <Link
           href="/shop_page?sort=best-selling"
-          className="flex items-center gap-2 cursor-pointer bg-black text-white hover:underline px-5 md:px-10 py-2 hover:opacity-90 transition"
+          className="flex items-center gap-2 cursor-pointer bg-main text-white hover:underline px-5 md:px-10 py-2 hover:opacity-90 transition"
         >
           <span className="text-sm md:text-base">View All</span>
         </Link>

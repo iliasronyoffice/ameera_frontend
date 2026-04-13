@@ -330,7 +330,7 @@ const fetchProducts = async () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-10">
+    <div className="mx-auto px-2 md:px-10 py-10">
       {/* Breadcrumb */}
       <Breadcrumb
         items={[
@@ -467,7 +467,7 @@ const fetchProducts = async () => {
           {/* Grid */}
           {!loading && products.length > 0 && (
             <>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
                 {products.map((product, index) => {
                   // Map API product data to match ProductCard1 expected props
                   const mappedProduct = {
@@ -560,7 +560,7 @@ const fetchProducts = async () => {
 
         {/* ======= Mobile Slide-in Sidebar ======= */}
         {showFilter && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-end lg:hidden">
+          <div className="fixed inset-0 bg-main bg-opacity-40 z-50 flex justify-end lg:hidden">
             <div className="bg-white w-4/5 h-full shadow-xl p-4 animate-slideIn overflow-y-auto">
               <div className="flex items-center justify-between mb-4 border-b pb-2">
                 <h3 className="text-lg font-semibold text-gray-800">

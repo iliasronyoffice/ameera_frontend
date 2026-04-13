@@ -95,7 +95,7 @@ export default function SearchModal({
     <div className="fixed inset-0 z-[9999]">
       {/* Backdrop */}
       <div 
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
+        className="absolute inset-0 bg-main/50 backdrop-blur-sm transition-opacity duration-300"
         onClick={onClose}
       />
       

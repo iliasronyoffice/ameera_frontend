@@ -71,7 +71,7 @@ export default function ImageGallery({ galleryImages }) {
     <div className="lg:col-span-5 relative">
       <div className="flex gap-4">
         {/* Thumbnail Gallery - Left Side (Y-axis) */}
-        <div className="relative w-24 md:w-28">
+        <div className="relative w-20 md:w-28">
           <div
             ref={swiperRef}
             className="flex flex-col gap-3 overflow-y-auto scrollbar-hide scroll-smooth max-h-[370px] md:max-h-[500px] 2xl:max-h-[600px]"

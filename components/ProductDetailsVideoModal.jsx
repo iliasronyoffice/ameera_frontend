@@ -189,14 +189,14 @@ export default function ProductDetailsVideoModal() {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/70 z-[99998]"
+        className="fixed inset-0 bg-main/70 z-[99998]"
         onClick={handleClose}
       />
 
       {/* Modal Popup */}
       <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
         <div
-          className="relative bg-black rounded-2xl overflow-hidden shadow-2xl"
+          className="relative bg-main rounded-2xl overflow-hidden shadow-2xl"
           style={{
             width: "700px",
             maxWidth: "90vw",
@@ -207,13 +207,13 @@ export default function ProductDetailsVideoModal() {
           {/* Close Button */}
           <button
             onClick={handleClose}
-            className="absolute top-3 right-3 z-10 w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white text-xl transition-colors"
+            className="absolute top-3 right-3 z-10 w-8 h-8 bg-main/60 hover:bg-main/80 rounded-full flex items-center justify-center text-white text-xl transition-colors"
           >
             ✕
           </button>
 
           {/* Video Container */}
-          <div className="relative w-full bg-black">
+          <div className="relative w-full bg-main">
             <video
               ref={videoRef}
               muted={isMuted}
@@ -233,7 +233,7 @@ export default function ProductDetailsVideoModal() {
             {/* Play Button Overlay (for when auto-play is blocked) */}
             {!isPlaying && isVideoReady && (
               <div 
-                className="absolute inset-0 flex items-center justify-center bg-black/50 cursor-pointer"
+                className="absolute inset-0 flex items-center justify-center bg-main/50 cursor-pointer"
                 onClick={handleManualPlay}
               >
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
@@ -244,7 +244,7 @@ export default function ProductDetailsVideoModal() {
 
             {/* Loading Indicator */}
             {!isVideoReady && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+              <div className="absolute inset-0 flex items-center justify-center bg-main/50">
                 <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               </div>
             )}
@@ -277,7 +277,7 @@ export default function ProductDetailsVideoModal() {
           <div className="absolute right-3 bottom-20 flex flex-col gap-2">
             {/* <button
               onClick={handleLike}
-              className="w-9 h-9 bg-black/60 rounded-full flex flex-col items-center justify-center hover:bg-black/80 transition-colors"
+              className="w-9 h-9 bg-main/60 rounded-full flex flex-col items-center justify-center hover:bg-main/80 transition-colors"
             >
               <span className="text-xl">{isLiked ? "❤️" : "🤍"}</span>
               <span className="text-white text-[10px]">
@@ -287,21 +287,21 @@ export default function ProductDetailsVideoModal() {
 
             <button
               onClick={handleComment}
-              className="w-9 h-9 bg-black/60 rounded-full flex items-center justify-center hover:bg-black/80 transition-colors"
+              className="w-9 h-9 bg-main/60 rounded-full flex items-center justify-center hover:bg-main/80 transition-colors"
             >
               <span className="text-white text-lg">💬</span>
             </button> */}
 
             <button
               onClick={handleShare}
-              className="w-9 h-9 bg-black/60 rounded-full flex items-center justify-center hover:bg-black/80 transition-colors"
+              className="w-9 h-9 bg-main/60 rounded-full flex items-center justify-center hover:bg-main/80 transition-colors"
             >
               <span className="text-white text-lg">📤</span>
             </button>
 
             <button
               onClick={toggleMute}
-              className="w-9 h-9 bg-black/60 rounded-full flex items-center justify-center hover:bg-black/80 transition-colors"
+              className="w-9 h-9 bg-main/60 rounded-full flex items-center justify-center hover:bg-main/80 transition-colors"
             >
               <span className="text-white text-lg">{isMuted ? "🔇" : "🔊"}</span>
             </button>

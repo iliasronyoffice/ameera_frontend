@@ -99,7 +99,7 @@ export default function FloatingVideoPlayer({ videoUrl, productName }) {
 
         {/* Video Player */}
         {!isMinimized && (
-          <div className="relative bg-black">
+          <div className="relative bg-main">
             <video
               ref={videoRef}
               src={videoUrl}

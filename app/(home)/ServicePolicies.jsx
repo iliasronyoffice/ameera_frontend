@@ -5,7 +5,7 @@ export default function ServicePolicies() {
     <div className="py-12">
       <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mx-auto px-2 md:px-10">
         <div className="card-design text-center">
-          <div className="svg flex justify-center items-center">
+          <div className="svg flex justify-center items-center w-10 h-10 md:w-30 md:h-30 mx-auto md:mb-0 mb-2">
             <svg
               width="67"
               height="68"
@@ -20,17 +20,17 @@ export default function ServicePolicies() {
             </svg>
           </div>
 
-          <h3 className="text-md md:text-2xl text-center">
+          <h3 className="text-sm md:text-2xl text-center uppercase">
             Ethical transparency
           </h3>
-          <p className="text-gray-300">
+          <p className="text-gray-300 md:text-lg text-xs">
             We are accountable to our customers, community, and workers, to
             ensure our high ethical standards.
           </p>
         </div>
         {/* second card  */}
         <div className="card-design text-center">
-          <div className="svg flex justify-center items-center">
+          <div className="svg flex justify-center items-center w-10 h-10 md:w-30 md:h-30 mx-auto md:mb-0 mb-2">
             <svg
               width="68"
               height="68"
@@ -45,16 +45,16 @@ export default function ServicePolicies() {
             </svg>
           </div>
 
-          <h3 className="text-md md:text-2xl text-center">
+          <h3 className="text-sm md:text-2xl text-center uppercase">
             Inclusive size range
           </h3>
-          <p className="text-gray-300">
+          <p className="text-gray-300 md:text-lg text-xs">
             For everyone of all shapes and sizes, ranging from S to XXL
           </p>
         </div>
         {/* Third card  */}
         <div className="card-design text-center">
-          <div className="svg flex justify-center items-center">
+          <div className="svg flex justify-center items-center w-10 h-10 md:w-30 md:h-30 mx-auto md:mb-0 mb-2">
             <svg
               width="68"
               height="68"
@@ -75,16 +75,16 @@ export default function ServicePolicies() {
               </defs>
             </svg>
           </div>
-          <h3 className="text-md md:text-2xl text-center">
+          <h3 className="text-sm md:text-2xl text-center uppercase">
             Customer service
           </h3>
-          <p className="text-gray-300">
+          <p className="text-gray-300 md:text-lg text-xs">
             Questions? Concerns? Compliments? We're here via email, chat, or phone
           </p>
         </div>
         {/* fourth card  */}
         {/* <div className="card-design text-center">
-          <div className="svg flex justify-center items-center">
+          <div className="svg flex justify-center items-center w-10 h-10 md:w-30 md:h-30 mx-auto md:mb-0 mb-2">
             <svg
               width="60"
               height="60"
@@ -116,10 +116,10 @@ export default function ServicePolicies() {
               />
             </svg>
           </div>
-          <h3 className="text-md md:text-2xl text-center">
+          <h3 className="text-sm md:text-2xl text-center uppercase">
             Shipping Nationwide
           </h3>
-          <p className="text-gray-300">
+          <p className="text-gray-300 md:text-lg text-xs">
             We ship our products nationwide, making them accessible to customers
             everywhere.
           </p>

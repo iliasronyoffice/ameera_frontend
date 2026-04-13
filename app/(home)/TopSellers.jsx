@@ -99,7 +99,7 @@ export default function TopSellers() {
 
         {/* Bottom Indicator Line */}
         <div className="w-full h-[3px] bg-gray-200 mt-6 rounded-2xl">
-          <div id="seller-progress" className="h-full bg-black w-0 rounded-2xl"></div>
+          <div id="seller-progress" className="h-full bg-main w-0 rounded-2xl"></div>
         </div>
       </div>
     </div>
