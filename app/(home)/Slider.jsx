@@ -99,7 +99,7 @@ export default function Slider() {
   const hasError = slidersError && !cachedSliders;
 
   return (
-    <div className="gap-4 mx-auto mb-4 relative w-full h-screen">
+    <div className="gap-4 mx-auto mb-4 relative w-full md:h-screen h-[90vh]">
       {/* Left: Main Slider */}
       <div className="md:col-span-10 relative">
         {/* Show placeholder while loading without cache */}
@@ -135,7 +135,7 @@ export default function Slider() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <div className="relative w-full md:h-screen h-[150px]">
+                  <div className="relative w-full md:h-screen h-[90vh]">
                     <Image
                       src={item.photo || item.image || item.src}
                       alt={item.title || `slider-${index}`}
