@@ -441,7 +441,7 @@ export default async function ProductPage({ params }) {
         }}
       />
       
-      <section className="p-2 min-h-screen container mx-auto md:mt-15 mt-10">
+      <section className="p-2 min-h-screen container mx-auto mt-10">
         <Breadcrumb productName={productData.name} />
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

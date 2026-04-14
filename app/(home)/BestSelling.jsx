@@ -45,65 +45,131 @@ export default function BestSelling() {
   const swiperRef = useRef(null);
 
   // Fetch products
+  // const fetchProducts = useCallback(async () => {
+  //   // Check memory cache
+  //   if (
+  //     memoryCache.data &&
+  //     memoryCache.timestamp &&
+  //     Date.now() - memoryCache.timestamp < memoryCache.duration
+  //   ) {
+  //     setProducts(memoryCache.data);
+  //     setLoading(false);
+  //     return;
+  //   }
+
+  //   if (fetchAttempted.current) return;
+  //   fetchAttempted.current = true;
+
+  //   try {
+  //     const controller = new AbortController();
+  //     const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+  //     // Fixed: Removed incompatible cache options for client component
+  //     const response = await fetch(
+  //       `${process.env.NEXT_PUBLIC_API_URL}/products/best-selling`,
+  //       {
+  //         signal: controller.signal,
+  //         headers: {
+  //           Accept: "application/json",
+  //           "Content-Type": "application/json",
+  //         },
+  //       },
+  //     );
+
+  //     clearTimeout(timeoutId);
+
+  //     if (!response.ok)
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+
+  //     const json = await response.json();
+
+  //     if (json.success) {
+  //       const productData = json.data || [];
+  //       setProducts(productData);
+
+  //       // Update cache
+  //       memoryCache.data = productData;
+  //       memoryCache.timestamp = Date.now();
+  //     } else {
+  //       setError(json.message || "Failed to fetch data");
+  //     }
+  //   } catch (err) {
+  //     if (err.name === "AbortError") {
+  //       setError("Request timeout - please refresh");
+  //     } else {
+  //       setError(err.message);
+  //     }
+  //     console.error("Fetch error:", err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, []);
+
   const fetchProducts = useCallback(async () => {
-    // Check memory cache
-    if (
-      memoryCache.data &&
-      memoryCache.timestamp &&
-      Date.now() - memoryCache.timestamp < memoryCache.duration
-    ) {
-      setProducts(memoryCache.data);
-      setLoading(false);
-      return;
-    }
+  // Check memory cache
+  if (
+    memoryCache.data &&
+    memoryCache.timestamp &&
+    Date.now() - memoryCache.timestamp < memoryCache.duration
+  ) {
+    setProducts(memoryCache.data);
+    setLoading(false);
+    return;
+  }
 
-    if (fetchAttempted.current) return;
-    fetchAttempted.current = true;
+  if (fetchAttempted.current) return;
+  fetchAttempted.current = true;
 
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000);
+  let controller = null;
+  let timeoutId = null;
+  
+  try {
+    controller = new AbortController();
+    timeoutId = setTimeout(() => {
+      if (controller && !controller.signal.aborted) {
+        controller.abort();
+      }
+    }, 8000);
 
-      // Fixed: Removed incompatible cache options for client component
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/products/best-selling`,
-        {
-          signal: controller.signal,
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/products/best-selling`,
+      {
+        signal: controller.signal,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
-      );
+      },
+    );
 
-      clearTimeout(timeoutId);
+    if (timeoutId) clearTimeout(timeoutId);
 
-      if (!response.ok)
-        throw new Error(`HTTP error! status: ${response.status}`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-      const json = await response.json();
+    const json = await response.json();
 
-      if (json.success) {
-        const productData = json.data || [];
-        setProducts(productData);
-
-        // Update cache
-        memoryCache.data = productData;
-        memoryCache.timestamp = Date.now();
-      } else {
-        setError(json.message || "Failed to fetch data");
-      }
-    } catch (err) {
-      if (err.name === "AbortError") {
-        setError("Request timeout - please refresh");
-      } else {
-        setError(err.message);
-      }
-      console.error("Fetch error:", err);
-    } finally {
-      setLoading(false);
+    if (json.success) {
+      const productData = json.data || [];
+      setProducts(productData);
+      memoryCache.data = productData;
+      memoryCache.timestamp = Date.now();
+    } else {
+      setError(json.message || "Failed to fetch data");
     }
-  }, []);
+  } catch (err) {
+    // Only treat as error if it's not an intentional abort
+    if (err.name === "AbortError") {
+      console.log("Request was intentionally aborted due to timeout");
+      setError("Request is taking too long - please refresh");
+    } else {
+      setError(err.message);
+      console.error("Fetch error:", err);
+    }
+  } finally {
+    setLoading(false);
+    fetchAttempted.current = false;
+  }
+}, []);
 
   // Initial fetch
   useEffect(() => {
