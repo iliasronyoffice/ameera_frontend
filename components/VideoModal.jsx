@@ -269,7 +269,9 @@ export default function VideoModal() {
 
 
                {/* Product Info */}
-          <div className="p-4 absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent">
+          <div className="p-4 absolute bottom-0 left-0 right-0 w-80
+bg-white/20 backdrop-blur-md border border-white/30
+rounded-xl shadow-lg">
             <Link href={`/Products/${videoItem?.slug}`} className="block" onClick={handleClose}>
               <div className="flex items-center gap-3 mb-3">
                 <img
