@@ -48,7 +48,8 @@ const nextConfig = {
       // Add rewrite for images to avoid CORS issues
       {
         source: "/uploads/:path*",
-        destination: "http://localhost/ameera/public/uploads/:path*",
+        // destination: "http://localhost/ameera/public/uploads/:path*",
+        destination: "https://dev2.nisamirrorfashionhouse.com/public/uploads/:path*",
       },
     ];
   },
