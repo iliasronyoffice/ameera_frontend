@@ -1,7 +1,7 @@
 "use client";
 
 const SocialIcon = ({ platform, url, className = "w-4 h-4" }) => {
-console.log("Rendering SocialIcon:", { platform, url });
+// console.log("Rendering SocialIcon:", { platform, url });
   const getIcon = () => {
     switch (platform) {
       case 'facebook':

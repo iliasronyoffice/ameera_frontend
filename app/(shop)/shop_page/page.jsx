@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { IoClose, IoFilterSharp } from "react-icons/io5";
 import ProductCard1 from "@/app/components/layout/ProductCard1";
@@ -18,218 +18,278 @@ export default function Shop() {
 
   // Get search parameters from URL
   const searchQuery = searchParams.get("q") || searchParams.get("name") || "";
-  const categoryId =
-    searchParams.get("category") || searchParams.get("categories") || "";
+  // In your Shop component, update how you read category from URL
+  const categoryId = searchParams.get("categories") || "";
   const minPrice =
     searchParams.get("min_price") || searchParams.get("min") || "";
   const maxPrice =
     searchParams.get("max_price") || searchParams.get("max") || "";
-  // const sortBy =
-  //   searchParams.get("sort") || searchParams.get("sort_key") || "newest";
-  const page = parseInt(searchParams.get("page")) || 1;
   const sortBy =
     searchParams.get("sort") || searchParams.get("sort_key") || "newest";
-  // console.log('sort by data found is',sortBy);
+  const page = parseInt(searchParams.get("page")) || 1;
+  const filter = searchParams.get("filter") || "";
+
   const [showFilter, setShowFilter] = useState(false);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState(null);
   const [totalProducts, setTotalProducts] = useState(0);
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 100000 });
 
   // State for filter data
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
+  const [colors, setColors] = useState([]);
   const [loadingFilters, setLoadingFilters] = useState(true);
-const filter = searchParams.get("filter") || "";
-// console.log('filter found',filter);
-  // Fetch filter data (categories and brands)
-  useEffect(() => {
-    fetchFilterData();
-  }, []);
 
-  const fetchFilterData = async () => {
-    try {
-      // Fetch categories
-      const categoriesResponse = await fetch(`${API_BASE_URL}/categories`);
-      const categoriesData = await categoriesResponse.json();
+  // Fetch filter data (categories, brands, colors)
+  // useEffect(() => {
+  //   fetchFilterData();
+  // }, []);
 
-      if (categoriesData.success) {
-        setCategories(categoriesData.data || []);
-      }
-
-      // Fetch brands
-      const brandsResponse = await fetch(`${API_BASE_URL}/brands`);
-      const brandsData = await brandsResponse.json();
-
-      if (brandsData.success) {
-        setBrands(brandsData.data || []);
-      }
-    } catch (error) {
-      console.error("Error fetching filter data:", error);
-    } finally {
-      setLoadingFilters(false);
-    }
-  };
-
-  // Fetch products based on search parameters
-  useEffect(() => {
-    fetchProducts();
-  }, [searchQuery, categoryId, minPrice, maxPrice, sortBy, page]);
-
-  // const fetchProducts = async () => {
-  //   setLoading(true);
+  // const fetchFilterData = async () => {
   //   try {
-  //     const params = new URLSearchParams();
-
-  //     // Add search query
-  //     if (searchQuery) {
-  //       params.append("name", searchQuery);
+  //     // Fetch categories
+  //     const categoriesResponse = await fetch(`${API_BASE_URL}/categories`);
+  //     const categoriesData = await categoriesResponse.json();
+  //     if (categoriesData.success) {
+  //       setCategories(categoriesData.data || []);
   //     }
 
-  //     // Add category filter
-  //     if (categoryId && categoryId !== "all") {
-  //       params.append("categories", categoryId);
+  //     // Fetch brands
+  //     const brandsResponse = await fetch(`${API_BASE_URL}/brands`);
+  //     const brandsData = await brandsResponse.json();
+  //     if (brandsData.success) {
+  //       setBrands(brandsData.data || []);
   //     }
 
-  //     // Add price range
-  //     if (minPrice) {
-  //       params.append("min", minPrice);
-  //     }
-  //     if (maxPrice) {
-  //       params.append("max", maxPrice);
-  //     }
-
-  //     // Add sorting
-  //     if (sortBy) {
-  //       params.append("sort_key", sortBy);
-  //     }
-
-  //     // Add pagination
-  //     params.append("page", page);
-  //     params.append("per_page", 24); // 24 products per page like Amazon
-
-  //     const response = await fetch(
-  //       `${API_BASE_URL}/products/search?${params.toString()}`,
-  //       {
-  //         headers: {
-  //           Accept: "application/json",
-  //         },
-  //       },
+  //     // Fetch available colors - DON'T filter by category for colors
+  //     // Colors should show all colors available in the store
+  //     const colorsResponse = await fetch(`${API_BASE_URL}/available-colors`);
+  //     const colorsData = await colorsResponse.json();
+  //     console.log("Fetched colors:", colorsData.data);
+  //     console.log(
+  //       "Does #A52A2A exist in colors?",
+  //       colorsData.data.some((c) => c.code === "#A52A2A"),
   //     );
-
-  //     if (!response.ok) {
-  //       throw new Error("Failed to fetch products");
+  //     if (colorsData.success) {
+  //       setColors(colorsData.data);
   //     }
 
-  //     const data = await response.json();
-
-  //     if (data.success) {
-  //       setProducts(data.data || []);
-  //       setPagination(data.meta);
-  //       setTotalProducts(data.meta?.total || 0);
-  //     } else {
-  //       setProducts([]);
-  //       setTotalProducts(0);
+  //     // Fetch min/max price
+  //     const priceResponse = await fetch(`${API_BASE_URL}/products/price-range`);
+  //     const priceData = await priceResponse.json();
+  //     if (priceData.success) {
+  //       setPriceRange({
+  //         min: priceData.min_price || 0,
+  //         max: priceData.max_price || 100000,
+  //       });
   //     }
   //   } catch (error) {
-  //     console.error("Error fetching products:", error);
-  //     setProducts([]);
-  //     setTotalProducts(0);
+  //     console.error("Error fetching filter data:", error);
   //   } finally {
-  //     setLoading(false);
+  //     setLoadingFilters(false);
   //   }
   // };
 
-  // Handle filter changes
-  // const handleFilterChange = (filterType, value) => {
-  //   const params = new URLSearchParams(searchParams.toString());
+//   const fetchFilterData = async () => {
+//   try {
+//     // Fetch categories
+//     const categoriesResponse = await fetch(`${API_BASE_URL}/categories`);
+//     const categoriesData = await categoriesResponse.json();
+//     if (categoriesData.success) {
+//       setCategories(categoriesData.data || []);
+//     }
 
-  //   if (filterType === 'category') {
-  //     if (value) {
-  //       params.set("categories", value);
-  //     } else {
-  //       params.delete("categories");
-  //     }
-  //   } else if (filterType === 'brand') {
-  //     // Handle multiple brands
-  //     let brands = params.get("brands") ? params.get("brands").split(',') : [];
-  //     if (brands.includes(value.toString())) {
-  //       brands = brands.filter(id => id !== value.toString());
-  //     } else {
-  //       brands.push(value.toString());
-  //     }
-  //     if (brands.length > 0) {
-  //       params.set("brands", brands.join(','));
-  //     } else {
-  //       params.delete("brands");
-  //     }
-  //   } else if (filterType === 'price') {
-  //     if (value.min) {
-  //       params.set("min", value.min);
-  //     } else {
-  //       params.delete("min");
-  //     }
-  //     if (value.max) {
-  //       params.set("max", value.max);
-  //     } else {
-  //       params.delete("max");
-  //     }
-  //   }
+//     // Fetch brands
+//     const brandsResponse = await fetch(`${API_BASE_URL}/brands`);
+//     const brandsData = await brandsResponse.json();
+//     if (brandsData.success) {
+//       setBrands(brandsData.data || []);
+//     }
 
-  //   params.set("page", "1"); // Reset to first page on filter change
-  //   router.push(`/shop_page?${params.toString()}`);
-  // };
-  // In the Shop page component, update the handleFilterChange function:
-// Add this to your shop page state declarations
+//     // Fetch available colors - FILTER BY CURRENT CATEGORY
+//     let colorsUrl = `${API_BASE_URL}/available-colors`;
+//     const currentCategory = searchParams.get("categories");
+//     if (currentCategory && currentCategory !== "") {
+//       colorsUrl += `?category_id=${currentCategory}`;
+//     }
+    
+//     const colorsResponse = await fetch(colorsUrl);
+//     const colorsData = await colorsResponse.json();
+//     if (colorsData.success) {
+//       setColors(colorsData.data);
+//       console.log(`Fetched ${colorsData.data.length} colors for category:`, currentCategory || 'All');
+//     }
+
+//     // Fetch min/max price
+//     const priceResponse = await fetch(`${API_BASE_URL}/products/price-range`);
+//     const priceData = await priceResponse.json();
+//     if (priceData.success) {
+//       setPriceRange({
+//         min: priceData.min_price || 0,
+//         max: priceData.max_price || 100000,
+//       });
+//     }
+//   } catch (error) {
+//     console.error("Error fetching filter data:", error);
+//   } finally {
+//     setLoadingFilters(false);
+//   }
+// };
+
+const fetchFilterData = async () => {
+  try {
+    // Make all API calls in parallel
+    const [categoriesRes, brandsRes, colorsRes, priceRes] = await Promise.all([
+      fetch(`${API_BASE_URL}/categories`),
+      fetch(`${API_BASE_URL}/brands`),
+      fetch(`${API_BASE_URL}/available-colors`),
+      fetch(`${API_BASE_URL}/products/price-range`)
+    ]);
+    
+    const categoriesData = await categoriesRes.json();
+    if (categoriesData.success) {
+      setCategories(categoriesData.data || []);
+    }
+    
+    const brandsData = await brandsRes.json();
+    if (brandsData.success) {
+      setBrands(brandsData.data || []);
+    }
+    
+    const colorsData = await colorsRes.json();
+    if (colorsData.success) {
+      setColors(colorsData.data);
+    }
+    
+    const priceData = await priceRes.json();
+    if (priceData.success) {
+      setPriceRange({
+        min: priceData.min_price || 0,
+        max: priceData.max_price || 100000,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching filter data:", error);
+  } finally {
+    setLoadingFilters(false);
+  }
+};
+
+// Refetch colors when category changes
+useEffect(() => {
+  fetchFilterData();
+}, [searchParams.get("categories")]); // Refetch when category changes
 
 
-// Update your fetchProducts function
+  // Helper function to get color code from name
+  function getColorCodeFromName(colorName) {
+    const colorMap = {
+      red: "#ef4444",
+      blue: "#3b82f6",
+      green: "#22c55e",
+      yellow: "#eab308",
+      black: "#000000",
+      white: "#ffffff",
+      gray: "#6b7280",
+      grey: "#6b7280",
+      purple: "#8b5cf6",
+      pink: "#ec4899",
+      orange: "#f97316",
+      brown: "#8b4513",
+      navy: "#1e3a8a",
+      maroon: "#800000",
+      teal: "#14b8a6",
+      cyan: "#06b6d4",
+      indigo: "#6366f1",
+      violet: "#8b5cf6",
+      magenta: "#f472b6",
+      lime: "#84cc16",
+      rose: "#f43f5e",
+      gold: "#fbbf24",
+      silver: "#9ca3af",
+      bronze: "#cd7f32",
+      beige: "#f5f5dc",
+      coral: "#ff7f50",
+      ivory: "#fffff0",
+      lavender: "#e6e6fa",
+      mint: "#98ff98",
+      olive: "#808000",
+      peach: "#ffdab9",
+      plum: "#dda0dd",
+      salmon: "#fa8072",
+      tan: "#d2b48c",
+      turquoise: "#40e0d0",
+    };
+    return colorMap[colorName?.toLowerCase()] || "#cccccc";
+  }
+
+  useEffect(() => {
+    fetchProducts();
+ }, [searchQuery, categoryId, minPrice, maxPrice, sortBy, page, filter, searchParams]);
+
 const fetchProducts = async () => {
   setLoading(true);
-
   try {
     const params = new URLSearchParams();
-    // console.log('params is ',params);
 
+    // Search query
     if (searchQuery) {
       params.append("name", searchQuery);
     }
 
-    if (categoryId && categoryId !== "all") {
-      params.append("categories", categoryId);
+    // Categories
+    const categoriesParam = searchParams.get("categories");
+    if (categoriesParam && categoriesParam !== "") {
+      params.append("categories", categoriesParam);
     }
 
-    if (minPrice) {
-      params.append("min", minPrice);
+    // Price range - Read from URL params directly
+    const minPriceParam = searchParams.get("min");
+    const maxPriceParam = searchParams.get("max");
+    
+    if (minPriceParam && minPriceParam !== "") {
+      params.append("min", minPriceParam);
+    }
+    if (maxPriceParam && maxPriceParam !== "") {
+      params.append("max", maxPriceParam);
     }
 
-    if (maxPrice) {
-      params.append("max", maxPrice);
-    }
-
+    // Sorting
     if (sortBy) {
       params.append("sort_key", sortBy);
     }
 
-    // FEATURED FILTER
+    // Featured filter
     if (filter === "featured") {
-      // console.log('under featured ');
       params.append("featured", "1");
     }
+    
+    // Brands
+    const brandsParam = searchParams.get("brands");
+    if (brandsParam && brandsParam !== "") {
+      params.append("brands", brandsParam);
+    }
+    
+    // Colors
+    const colorsParam = searchParams.get("colors");
+    if (colorsParam && colorsParam !== "") {
+      params.append("colors", colorsParam);
+    }
 
+    // Pagination
     params.append("page", page);
     params.append("per_page", 24);
 
-    const response = await fetch(
-      `${API_BASE_URL}/products/search?${params.toString()}`,
-      {
-        headers: { Accept: "application/json" },
-      }
-    );
+    const apiUrl = `${API_BASE_URL}/products/search?${params.toString()}`;
+    console.log('📡 API URL:', apiUrl);
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch products");
-    }
+    const response = await fetch(apiUrl, {
+      headers: { Accept: "application/json" },
+    });
+
+    if (!response.ok) throw new Error("Failed to fetch products");
 
     const data = await response.json();
 
@@ -237,6 +297,7 @@ const fetchProducts = async () => {
       setProducts(data.data || []);
       setPagination(data.meta);
       setTotalProducts(data.meta?.total || 0);
+      console.log('✅ Products loaded:', data.data?.length);
     } else {
       setProducts([]);
       setTotalProducts(0);
@@ -249,84 +310,116 @@ const fetchProducts = async () => {
     setLoading(false);
   }
 };
-  
-  const handleFilterChange = (filterType, value) => {
-    const params = new URLSearchParams(searchParams.toString());
 
-    if (filterType === "category") {
-      if (value) {
+const handleFilterChange = (filterType, value) => {
+  const params = new URLSearchParams(searchParams.toString());
+
+  switch (filterType) {
+    case "category":
+      if (value && value !== "all" && value !== "") {
         params.set("categories", value);
       } else {
         params.delete("categories");
       }
-    } else if (filterType === "brand") {
-      if (value) {
+      break;
+      
+    case "brand":
+      if (value && value !== "") {
         params.set("brands", value);
       } else {
         params.delete("brands");
       }
-    } else if (filterType === "price") {
-      if (value.min) {
-        params.set("min", value.min);
+      break;
+      
+    case "color":
+      // Preserve categories when adding color
+      const existingCategories = searchParams.get("categories");
+      if (existingCategories) {
+        params.set("categories", existingCategories);
+      }
+      if (value && value !== "") {
+        params.set("colors", value);
+      } else {
+        params.delete("colors");
+      }
+      break;
+      
+    case "price":
+      // Handle price filter
+      if (value.min !== undefined && value.min !== null && value.min > 0) {
+        params.set("min", value.min.toString());
       } else {
         params.delete("min");
       }
-      if (value.max) {
-        params.set("max", value.max);
+      if (value.max !== undefined && value.max !== null && value.max < priceRange.max) {
+        params.set("max", value.max.toString());
       } else {
         params.delete("max");
       }
-    } else if (filterType === "rating") {
-      if (value) {
+      break;
+      
+    case "rating":
+      if (value && value !== "") {
         params.set("rating", value);
       } else {
         params.delete("rating");
       }
-    }
+      break;
+  }
 
-    params.set("page", "1"); // Reset to first page on filter change
-    router.push(`/shop_page?${params.toString()}`);
-  };
+  params.set("page", "1");
+  const newUrl = `/shop_page?${params.toString()}`;
+  console.log("New URL:", newUrl);
+  router.push(newUrl);
+};
 
-  // Handle sort change
   const handleSortChange = (e) => {
     const newSort = e.target.value;
     const params = new URLSearchParams(searchParams.toString());
     params.set("sort", newSort);
-    params.set("page", "1"); // Reset to first page on sort change
+    params.set("page", "1");
     router.push(`/shop_page?${params.toString()}`);
   };
 
-  // Handle page change
   const handlePageChange = (newPage) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", newPage);
     router.push(`/shop_page?${params.toString()}`);
   };
 
-  // Get page numbers for pagination
+  const clearAllFilters = () => {
+    router.push("/shop_page");
+  };
+
   const getPageNumbers = () => {
     if (!pagination) return [];
-
     const totalPages = pagination.last_page;
     const currentPage = pagination.current_page;
-    const delta = 2; // Number of pages to show on each side of current page
-
+    const delta = 2;
     let pages = [];
-
     for (let i = 1; i <= totalPages; i++) {
       if (
-        i === 1 || // First page
-        i === totalPages || // Last page
-        (i >= currentPage - delta && i <= currentPage + delta) // Pages around current
+        i === 1 ||
+        i === totalPages ||
+        (i >= currentPage - delta && i <= currentPage + delta)
       ) {
         pages.push(i);
       } else if (pages[pages.length - 1] !== "...") {
         pages.push("...");
       }
     }
-
     return pages;
+  };
+
+  // Active filters count
+  const getActiveFiltersCount = () => {
+    let count = 0;
+    if (categoryId && categoryId !== "all") count++;
+    if (minPrice || maxPrice) count++;
+    if (searchParams.get("brands")) count++;
+    if (searchParams.get("colors")) count++;
+    if (searchParams.get("rating")) count++;
+    return count;
   };
 
   return (
@@ -337,95 +430,137 @@ const fetchProducts = async () => {
           { name: "Home", href: "/" },
           { name: "Shop", href: "/shop_page" },
           ...(searchQuery ? [{ name: `"${searchQuery}"`, href: "#" }] : []),
-          ...(categoryId && categoryId !== "all"
-            ? [{ name: "Category", href: "#" }]
-            : []),
         ]}
       />
 
       {/* Search info bar */}
       {searchQuery && (
-        <div className="mb-6 p-4 bg-purple-50 rounded-lg border border-main">
+        <div className="mb-6 p-4 bg-purple-50 rounded-lg border border-purple-200">
           <h1 className="text-xl font-semibold text-gray-800">
             Search results for "{searchQuery}"
           </h1>
-          {categoryId && categoryId !== "all" && (
-            <p className="text-sm text-gray-600 mt-1">
-              Filtered by selected category
-            </p>
-          )}
+          <p className="text-sm text-gray-600 mt-1">
+            Found {totalProducts} products
+          </p>
         </div>
       )}
 
       <div className="flex flex-col lg:flex-row gap-6 relative">
-        {/* ======= Sidebar (desktop only) ======= */}
-        <aside className="hidden lg:block w-full lg:w-1/4 bg-white border border-gray-200 rounded-2xl shadow-sm p-4 space-y-6">
+        {/* Sidebar (desktop only) */}
+        <aside className="hidden lg:block w-full lg:w-1/4 bg-white border border-gray-200 rounded-2xl shadow-sm p-4 space-y-6 h-fit sticky top-20 overflow-y-auto">
+          {/* <SidebarContent
+            categories={categories}
+            brands={brands}
+            colors={colors}
+            selectedCategory={categoryId}
+            minPrice={minPrice || priceRange.min}
+            maxPrice={maxPrice || priceRange.max}
+            priceRangeMin={priceRange.min}
+            priceRangeMax={priceRange.max}
+            onFilterChange={handleFilterChange}
+            loading={loadingFilters}
+          /> */}
           <SidebarContent
             categories={categories}
             brands={brands}
+            colors={colors}
             selectedCategory={categoryId}
-            minPrice={minPrice}
-            maxPrice={maxPrice}
+            minPrice={minPrice || priceRange.min}
+            maxPrice={maxPrice || priceRange.max}
+            priceRangeMin={priceRange.min}
+            priceRangeMax={priceRange.max}
             onFilterChange={handleFilterChange}
             loading={loadingFilters}
+            currentProducts={products} // Add this line
           />
         </aside>
 
-        {/* ======= Product Grid ======= */}
+        {/* Product Grid */}
         <section className="flex-1">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-2">
-            {/* Title */}
             <div className="flex flex-col items-start gap-1">
               <h2 className="text-xl font-semibold">
                 {searchQuery ? "Search Results" : "All Products"}
               </h2>
               <span className="text-sm text-gray-500">
                 {totalProducts.toLocaleString()} Products
-                {searchQuery && ` found for "${searchQuery}"`}
               </span>
             </div>
 
             <div className="flex items-center gap-2 w-full sm:w-auto">
-              {/* Mobile filter icon */}
+              {/* Mobile filter button */}
               <button
                 onClick={() => setShowFilter(true)}
-                className="lg:hidden p-2 border rounded-md text-gray-700 hover:bg-gray-100 flex items-center gap-1"
+                className="lg:hidden p-2 border rounded-md text-gray-700 hover:bg-gray-100 flex items-center gap-1 relative"
               >
                 <IoFilterSharp size={18} />
                 <span className="text-sm">Filter</span>
+                {getActiveFiltersCount() > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-main text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                    {getActiveFiltersCount()}
+                  </span>
+                )}
               </button>
 
               {/* Sort dropdown */}
-              {/* <select
-                value={sortBy}
-                onChange={handleSortChange}
-                className="border rounded-md px-3 py-2 text-sm text-gray-700 w-full sm:w-auto lg:block focus:outline-none focus:ring-2 focus:ring-purple-400"
-              >
-                <option value="newest">Newest Arrivals</option>
-                <option value="popularity">Best Selling</option>
-                <option value="top_rated">Top Rated</option>
-                <option value="price_low_to_high">Price: Low to High</option>
-                <option value="price_high_to_low">Price: High to Low</option>
-              </select> */}
               <select
                 value={sortBy}
                 onChange={handleSortChange}
-                className="border rounded-md px-3 py-2 text-sm text-gray-700 w-full sm:w-auto lg:block focus:outline-none focus:ring-2 focus:ring-purple-400"
+                className="border rounded-md px-3 py-2 text-sm text-gray-700 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-main"
               >
-                <option value="featured">Featured</option> {/* Add this */}
+                <option value="featured">Featured</option>
                 <option value="newest">Newest Arrivals</option>
                 <option value="popularity">Best Selling</option>
                 <option value="top_rated">Top Rated</option>
                 <option value="price_low_to_high">Price: Low to High</option>
                 <option value="price_high_to_low">Price: High to Low</option>
               </select>
+
+              {/* Clear filters button */}
+              {getActiveFiltersCount() > 0 && (
+                <button
+                  onClick={clearAllFilters}
+                  className="text-sm text-main hover:text-main-dark whitespace-nowrap"
+                >
+                  Clear all
+                </button>
+              )}
             </div>
           </div>
+
+          {/* Active filters display */}
+          {getActiveFiltersCount() > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {categoryId && categoryId !== "all" && (
+                <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-300 text-main rounded-md text-sm">
+                  Category:{" "}
+                  {categories.find((c) => c.id == categoryId)?.name ||
+                    categoryId}
+                  <button onClick={() => handleFilterChange("category", null)}>
+                    <IoClose size={14} />
+                  </button>
+                </span>
+              )}
+              {(minPrice || maxPrice) && (
+                <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-300 text-main rounded-md text-sm">
+                  Price: ${minPrice || priceRange.min} - $
+                  {maxPrice || priceRange.max}
+                  <button
+                    onClick={() =>
+                      handleFilterChange("price", { min: null, max: null })
+                    }
+                  >
+                    <IoClose size={14} />
+                  </button>
+                </span>
+              )}
+            </div>
+          )}
 
           {/* Loading State */}
           {loading && (
             <div className="flex justify-center items-center py-20">
-              <FaSpinner className="animate-spin text-4xl text-purple-600" />
+              <FaSpinner className="animate-spin text-4xl text-main" />
             </div>
           )}
 
@@ -451,15 +586,14 @@ const fetchProducts = async () => {
                 No products found
               </h3>
               <p className="text-sm text-gray-500 mb-6">
-                {searchQuery
-                  ? `We couldn't find any products matching "${searchQuery}"`
-                  : "No products available in this category"}
+                No products match the selected filters. Try removing some
+                filters or try a different color.
               </p>
               <button
-                onClick={() => router.push("/shop_page")}
-                className="inline-flex items-center justify-center px-6 py-3 bg-purple-600 text-white rounded-xl text-sm font-semibold hover:bg-purple-700 transition-colors"
+                onClick={clearAllFilters}
+                className="inline-flex items-center justify-center px-6 py-3 bg-main text-white rounded-xl text-sm font-semibold hover:bg-main-dark transition-colors"
               >
-                Clear Filters
+                Clear All Filters
               </button>
             </div>
           )}
@@ -469,7 +603,6 @@ const fetchProducts = async () => {
             <>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
                 {products.map((product, index) => {
-                  // Map API product data to match ProductCard1 expected props
                   const mappedProduct = {
                     id: product.id,
                     slug: product.slug,
@@ -495,7 +628,6 @@ const fetchProducts = async () => {
                     brand: product.brand,
                     wishlist_count: product.wishlist_count || 0,
                   };
-
                   return (
                     <ProductCard1
                       key={product.id}
@@ -530,7 +662,7 @@ const fetchProducts = async () => {
                         disabled={pageNum === "..."}
                         className={`px-3 py-2 rounded-md text-sm ${
                           pageNum === pagination.current_page
-                            ? "bg-purple-600 text-white"
+                            ? "bg-main text-white"
                             : pageNum === "..."
                               ? "cursor-default"
                               : "border hover:bg-gray-50"
@@ -558,9 +690,9 @@ const fetchProducts = async () => {
           )}
         </section>
 
-        {/* ======= Mobile Slide-in Sidebar ======= */}
+        {/* Mobile Slide-in Sidebar */}
         {showFilter && (
-          <div className="fixed inset-0 bg-main bg-opacity-40 z-50 flex justify-end lg:hidden">
+          <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-end lg:hidden">
             <div className="bg-white w-4/5 h-full shadow-xl p-4 animate-slideIn overflow-y-auto">
               <div className="flex items-center justify-between mb-4 border-b pb-2">
                 <h3 className="text-lg font-semibold text-gray-800">
@@ -574,15 +706,32 @@ const fetchProducts = async () => {
                 </button>
               </div>
 
-              <SidebarContent
+              {/* <SidebarContent
                 categories={categories}
                 brands={brands}
+                colors={colors}
                 selectedCategory={categoryId}
-                minPrice={minPrice}
-                maxPrice={maxPrice}
+                minPrice={minPrice || priceRange.min}
+                maxPrice={maxPrice || priceRange.max}
+                priceRangeMin={priceRange.min}
+                priceRangeMax={priceRange.max}
                 onFilterChange={handleFilterChange}
                 onClose={() => setShowFilter(false)}
                 loading={loadingFilters}
+              /> */}
+              <SidebarContent
+                categories={categories}
+                brands={brands}
+                colors={colors}
+                selectedCategory={categoryId}
+                minPrice={minPrice || priceRange.min}
+                maxPrice={maxPrice || priceRange.max}
+                priceRangeMin={priceRange.min}
+                priceRangeMax={priceRange.max}
+                onFilterChange={handleFilterChange}
+                onClose={() => setShowFilter(false)}
+                loading={loadingFilters}
+                currentProducts={products} // Add this line
               />
             </div>
           </div>

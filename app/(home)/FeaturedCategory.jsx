@@ -17,7 +17,7 @@ export default function FeaturedCategory() {
     6 * 60 * 1000, // 6 minutes cache duration
   );
 
-  console.log("FeaturedCategory data:", categories);
+  // console.log("FeaturedCategory data:", categories);
 
   if (loading) {
     return (
@@ -65,7 +65,7 @@ export default function FeaturedCategory() {
             className="bg-white shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
           >
             {/* Banner Image */}
-            <Link href={`/shop_page?category=${category.id}`} className="block">
+            <Link href={`/shop_page?categories=${category.id}`} className="block">
               <div className="relative w-full bg-gray-100">
                 <img
                   src={category.banner}
