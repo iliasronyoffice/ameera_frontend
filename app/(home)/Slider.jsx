@@ -135,7 +135,7 @@ export default function Slider() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <div className="relative w-full h-screen">
+                  <div className="relative w-full md:h-screen h-[150px]">
                     <Image
                       src={item.photo || item.image || item.src}
                       alt={item.title || `slider-${index}`}
