@@ -269,7 +269,7 @@ export default function VideoModal() {
 
 
                {/* Product Info */}
-          <div className="p-4 absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent">
+          <div className="p-4 absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent w-80">
             <Link href={`/Products/${videoItem?.slug}`} className="block" onClick={handleClose}>
               <div className="flex items-center gap-3 mb-3">
                 <img
@@ -281,7 +281,7 @@ export default function VideoModal() {
                   <h3 className="text-white text-sm font-semibold">
                     {videoItem?.name}
                   </h3>
-                  <p className="text-black text-base font-bold mt-1">
+                  <p className="text-white text-base font-bold mt-1">
                     {formatPrice(videoItem?.main_price)}
                   </p>
                 </div>
