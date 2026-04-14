@@ -23,19 +23,19 @@ export default function VideoModal() {
       setIsVideoReady(false);
       setIsPlaying(false);
       setProgress(0);
-      
+
       // Load and play video with proper promise handling
       const videoElement = videoRef.current;
-      
+
       // Set source and load
       if (videoElement.src !== videoItem?.custom_video) {
         videoElement.src = videoItem?.custom_video;
         videoElement.load();
       }
-      
+
       // Handle play with promise
       const playPromise = videoElement.play();
-      
+
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
@@ -59,7 +59,7 @@ export default function VideoModal() {
       }
     };
     window.addEventListener("keydown", handleEsc);
-    
+
     return () => {
       window.removeEventListener("keydown", handleEsc);
       if (progressInterval.current) {
@@ -77,10 +77,15 @@ export default function VideoModal() {
     if (progressInterval.current) {
       clearInterval(progressInterval.current);
     }
-    
+
     progressInterval.current = setInterval(() => {
-      if (videoRef.current && videoRef.current.duration && !isNaN(videoRef.current.duration)) {
-        const value = (videoRef.current.currentTime / videoRef.current.duration) * 100;
+      if (
+        videoRef.current &&
+        videoRef.current.duration &&
+        !isNaN(videoRef.current.duration)
+      ) {
+        const value =
+          (videoRef.current.currentTime / videoRef.current.duration) * 100;
         setProgress(isNaN(value) ? 0 : value);
       }
     }, 100);
@@ -164,7 +169,7 @@ export default function VideoModal() {
       text: `Check out ${videoItem?.name}`,
       url: `${window.location.origin}/product/${videoItem?.slug}`,
     };
-    
+
     if (navigator.share) {
       try {
         await navigator.share(shareData);
@@ -220,7 +225,11 @@ export default function VideoModal() {
               loop
               playsInline
               className="w-full"
-              style={{ maxHeight: "80vh", objectFit: "contain", cursor: "pointer" }}
+              style={{
+                maxHeight: "80vh",
+                objectFit: "contain",
+                cursor: "pointer",
+              }}
               onTimeUpdate={updateProgress}
               onCanPlay={() => setIsVideoReady(true)}
               preload="auto"
@@ -232,7 +241,7 @@ export default function VideoModal() {
 
             {/* Play Button Overlay (for when auto-play is blocked) */}
             {!isPlaying && isVideoReady && (
-              <div 
+              <div
                 className="absolute inset-0 flex items-center justify-center bg-main/50 cursor-pointer"
                 onClick={handleManualPlay}
               >
@@ -267,33 +276,34 @@ export default function VideoModal() {
               </div>
             )}
 
-
-               {/* Product Info */}
-          <div className="p-4 absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent w-80">
-            <Link href={`/Products/${videoItem?.slug}`} className="block" onClick={handleClose}>
-              <div className="flex items-center gap-3 mb-3">
-                <img
-                  src={videoItem?.thumbnail_image}
-                  alt={videoItem?.name}
-                  className="w-12 h-16 object-cover rounded"
-                />
-                <div className="flex-1">
-                  <h3 className="text-white text-sm font-semibold">
-                    {videoItem?.name}
-                  </h3>
-                  <p className="text-white text-base font-bold mt-1">
-                    {formatPrice(videoItem?.main_price)}
-                  </p>
+            {/* Product Info */}
+            <div className="p-4 absolute bottom-8 left-4 rounded-2xl right-0 bg-gradient-to-t from-white/80 to-transparent w-80">
+              <Link
+                href={`/Products/${videoItem?.slug}`}
+                className="block"
+                onClick={handleClose}
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <img
+                    src={videoItem?.thumbnail_image}
+                    alt={videoItem?.name}
+                    className="w-12 h-16 object-cover rounded"
+                  />
+                  <div className="flex-1">
+                    <h3 className="text-white text-sm font-semibold">
+                      {videoItem?.name}
+                    </h3>
+                    <p className="text-white text-base font-bold mt-1">
+                      {formatPrice(videoItem?.main_price)}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <button className="w-full px-4 py-2 bg-main text-white rounded-lg font-semibold transition-colors">
-                View Product 🔗
-              </button>
-            </Link>
+                <button className="w-full px-4 py-2 bg-main text-white rounded-lg font-semibold transition-colors">
+                  View Product 🔗
+                </button>
+              </Link>
+            </div>
           </div>
-          </div>
-
-       
 
           {/* Social Buttons */}
           <div className="absolute right-3 bottom-20 flex flex-col gap-2">
@@ -318,14 +328,66 @@ export default function VideoModal() {
               onClick={handleShare}
               className="w-9 h-9 bg-main/60 rounded-full flex items-center justify-center hover:bg-main/80 transition-colors"
             >
-              <span className="text-white text-lg">📤</span>
+              <span className="text-white text-lg">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fillRule="evenodd"
+                >
+                  <g>
+                    <path
+                      d="M11 2H6a4 4 0 0 0-4 4v12a4 4 0 0 0 4 4h12a4 4 0 0 0 4-4v-5a1 1 0 0 0-2 0v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5a1 1 0 0 0 0-2zm7.586 2H15a1 1 0 0 1 0-2h6a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0V5.414l-7.293 7.293a1 1 0 0 1-1.414-1.414z"
+                      fill="#fff"
+                    />
+                  </g>
+                </svg>
+              </span>
             </button>
 
             <button
               onClick={toggleMute}
               className="w-9 h-9 bg-main/60 rounded-full flex items-center justify-center hover:bg-main/80 transition-colors"
+              aria-label={isMuted ? "Unmute" : "Mute"}
             >
-              <span className="text-white text-lg">{isMuted ? "🔇" : "🔊"}</span>
+              {isMuted ? (
+                <svg
+                  key="muted"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-white"
+                >
+                  <path d="M11 2L6 7H3c-.6 0-1 .4-1 1v8c0 .6.4 1 1 1h3l5 5V2z" />
+                  <line x1="22" y1="9" x2="16" y2="15" />
+                  <line x1="16" y1="9" x2="22" y2="15" />
+                </svg>
+              ) : (
+                <svg
+                  key="unmuted"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-white"
+                >
+                  <path d="M11 2L6 7H3c-.6 0-1 .4-1 1v8c0 .6.4 1 1 1h3l5 5V2z" />
+                  <path d="M19 8l4 4-4 4" />
+                  <path d="M15 12h8" />
+                </svg>
+              )}
             </button>
           </div>
         </div>
@@ -350,7 +412,7 @@ export default function VideoModal() {
         .progress-bar::-webkit-slider-thumb:hover {
           transform: scale(1.2);
         }
-        
+
         @keyframes spin {
           from {
             transform: rotate(0deg);
