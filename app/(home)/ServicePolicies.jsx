@@ -3,7 +3,7 @@ import React from "react";
 export default function ServicePolicies() {
   return (
     <div className="py-12">
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mx-auto px-2 md:px-10">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mx-auto px-2 md:px-10 border-t border-gray-200">
         <div className="card-design text-center">
           <div className="svg flex justify-center items-center w-10 h-10 md:w-30 md:h-30 mx-auto md:mb-0 mb-2">
             <svg
@@ -79,7 +79,7 @@ export default function ServicePolicies() {
             Customer service
           </h3>
           <p className="text-gray-300 md:text-lg text-xs">
-            Questions? Concerns? Compliments? We're here via email, chat, or phone
+            Questions? Concerns? Compliments? We are here via email, chat, or phone
           </p>
         </div>
         {/* fourth card  */}

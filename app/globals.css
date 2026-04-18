@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background:#F8F5F0;
   --foreground: #000;
   --main: #19073B;
   --main-hov: #19073B;
@@ -13,7 +13,7 @@
 }
 
 @theme inline {
-  --color-background: var(--background);
+  --color-background: ##F8F5F0;
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -347,11 +347,53 @@
   width: 100%;
 }
 
+/* button hover overlay effect */
+@layer components {
+  .btn-wipe {
+    @apply relative inline-flex items-center justify-center
+    px-6 md:px-10 py-2
+    bg-main text-white
+    overflow-hidden
+    border border-main
+    transition-all duration-600 cursor-pointer;
+  }
+
+  .btn-wipe-text {
+    @apply relative z-10 text-sm md:text-base
+    transition-colors duration-600;
+  }
+
+  .btn-wipe-overlay {
+    @apply absolute inset-0
+    bg-[#F8F5F0]
+    -translate-x-full
+    transition-transform duration-600 ease-in-out;
+  }
+
+  .btn-wipe-border {
+    @apply absolute inset-0
+    opacity-0
+    transition-opacity duration-600;
+  }
+}
+
 html {
   scrollbar-gutter: stable;
 }
 body {
-  background: var(--background);
+  background: #F8F5F0 !important;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /* font-family: Arial, Helvetica, sans-serif; */
+  font-family: var(--font-milliard), var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+}
+
+/* Optional: Create helper classes */
+.font-milliard {
+  font-family: var(--font-milliard), sans-serif;
+}
+
+.font-milliard-extrabold-italic {
+  font-family: var(--font-milliard), sans-serif;
+  font-weight: 800;
+  font-style: italic;
 }

@@ -1,5 +1,6 @@
 // app/layout.js
 import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import LayoutDetector from "@/components/LayoutDetector";
 import { ReduxProvider } from "./ReduxProvider";
@@ -15,6 +16,124 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+// Complete Milliard font configuration with all weights
+const milliard = localFont({
+  src: [
+    {
+      path: "../public/fonts/Milliard-Hairline.otf",
+      weight: "100",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Milliard-HairlineItalic.otf",
+      weight: "100",
+      style: "italic",
+    },
+    {
+      path: "../public/fonts/Milliard-Thin.otf",
+      weight: "200",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Milliard-ThinItalic.otf",
+      weight: "200",
+      style: "italic",
+    },
+    {
+      path: "../public/fonts/Milliard-ExtraLight.otf",
+      weight: "200",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Milliard-ExtraLightItalic.otf",
+      weight: "200",
+      style: "italic",
+    },
+    {
+      path: "../public/fonts/Milliard-Light.otf",
+      weight: "300",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Milliard-LightItalic.otf",
+      weight: "300",
+      style: "italic",
+    },
+    {
+      path: "../public/fonts/Milliard-Book.otf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Milliard-BookItalic.otf",
+      weight: "400",
+      style: "italic",
+    },
+    {
+      path: "../public/fonts/Milliard-Medium.otf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Milliard-MediumItalic.otf",
+      weight: "500",
+      style: "italic",
+    },
+    {
+      path: "../public/fonts/Milliard-SemiBold.otf",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Milliard-SemiBoldItalic.otf",
+      weight: "600",
+      style: "italic",
+    },
+    {
+      path: "../public/fonts/Milliard-Bold.otf",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Milliard-BoldItalic.otf",
+      weight: "700",
+      style: "italic",
+    },
+    {
+      path: "../public/fonts/Milliard-ExtraBold.otf",
+      weight: "800",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Milliard-ExtraBoldItalic.otf",
+      weight: "800",
+      style: "italic",
+    },
+    {
+      path: "../public/fonts/Milliard-Heavy.otf",
+      weight: "900",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Milliard-HeavyItalic.otf",
+      weight: "900",
+      style: "italic",
+    },
+    {
+      path: "../public/fonts/Milliard-Black.otf",
+      weight: "900",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Milliard-BlackItalic.otf",
+      weight: "900",
+      style: "italic",
+    },
+  ],
+  variable: "--font-milliard",
+  display: "swap",
 });
 
 // Dynamic metadata for layout
@@ -109,7 +228,7 @@ export default async function RootLayout({ children }) {
       </head>
       <body
         suppressHydrationWarning
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${milliard.variable} antialiased`}
       >
         <ReduxProvider>
           <ThemeProvider>

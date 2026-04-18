@@ -1,182 +1,251 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import ProductCard1 from "../components/layout/ProductCard1";
+import HoverButton from "../components/layout/HoverButton";
 import Link from "next/link";
 
-// Skeleton component
+// Enhanced cache with localStorage persistence
+const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
+const CACHE_KEY = "best_selling_products";
+
+// Skeleton component with better visual representation
 function BestSellingSkeleton() {
   return (
     <div className="best-selling-product-section mx-auto px-2 md:px-10 py-8">
-      <div className="flex justify-between items-center mb-4">
-        <div className="h-8 w-48 bg-gray-200 animate-pulse rounded"></div>
-        <div className="h-8 w-24 bg-gray-200 animate-pulse rounded"></div>
+      <div className="flex flex-col items-center justify-center text-center mb-6">
+        <div className="h-8 w-32 bg-gray-200 animate-pulse rounded mb-2"></div>
+        <div className="h-4 w-64 bg-gray-200 animate-pulse rounded"></div>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-        {[...Array(6)].map((_, i) => (
-          <div
-            key={i}
-            className="bg-gray-100 animate-pulse rounded-lg"
-            style={{ height: "280px" }}
-          ></div>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {[...Array(8)].map((_, i) => (
+          <div key={i} className="animate-pulse">
+            <div
+              className="bg-gray-200 rounded-lg"
+              style={{ height: "280px" }}
+            ></div>
+            <div className="mt-2 space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+            </div>
+          </div>
         ))}
       </div>
     </div>
   );
 }
 
-// Memory cache
-const memoryCache = {
-  data: null,
-  timestamp: null,
-  duration: 5 * 60 * 1000, // 5 minutes
-};
+// Error component with retry logic
+function ErrorState({ error, onRetry }) {
+  return (
+    <div className="best-selling-product-section mx-auto px-2 md:px-10 py-8">
+      <div className="p-6 bg-red-50 border border-red-200 rounded-lg text-center">
+        <svg
+          className="mx-auto h-12 w-12 text-red-500 mb-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <p className="text-red-700 mb-2 font-medium">
+          Failed to load Best Selling products
+        </p>
+        <p className="text-red-600 text-sm mb-4">{error}</p>
+        <button
+          onClick={onRetry}
+          className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+        >
+          Try Again
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function BestSelling() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [swiperProgress, setSwiperProgress] = useState(0);
+  const [retryCount, setRetryCount] = useState(0);
+
   const fetchAttempted = useRef(false);
+  const abortControllerRef = useRef(null);
   const swiperRef = useRef(null);
+  const isMounted = useRef(true);
 
-  // Fetch products
-  // const fetchProducts = useCallback(async () => {
-  //   // Check memory cache
-  //   if (
-  //     memoryCache.data &&
-  //     memoryCache.timestamp &&
-  //     Date.now() - memoryCache.timestamp < memoryCache.duration
-  //   ) {
-  //     setProducts(memoryCache.data);
-  //     setLoading(false);
-  //     return;
-  //   }
+  // Load from cache (sync operation)
+  const loadFromCache = useCallback(() => {
+    try {
+      const cachedData = localStorage.getItem(CACHE_KEY);
+      const cachedTime = localStorage.getItem(`${CACHE_KEY}_time`);
 
-  //   if (fetchAttempted.current) return;
-  //   fetchAttempted.current = true;
+      if (cachedData && cachedTime) {
+        const now = Date.now();
+        const timeDiff = now - parseInt(cachedTime);
 
-  //   try {
-  //     const controller = new AbortController();
-  //     const timeoutId = setTimeout(() => controller.abort(), 8000);
-
-  //     // Fixed: Removed incompatible cache options for client component
-  //     const response = await fetch(
-  //       `${process.env.NEXT_PUBLIC_API_URL}/products/best-selling`,
-  //       {
-  //         signal: controller.signal,
-  //         headers: {
-  //           Accept: "application/json",
-  //           "Content-Type": "application/json",
-  //         },
-  //       },
-  //     );
-
-  //     clearTimeout(timeoutId);
-
-  //     if (!response.ok)
-  //       throw new Error(`HTTP error! status: ${response.status}`);
-
-  //     const json = await response.json();
-
-  //     if (json.success) {
-  //       const productData = json.data || [];
-  //       setProducts(productData);
-
-  //       // Update cache
-  //       memoryCache.data = productData;
-  //       memoryCache.timestamp = Date.now();
-  //     } else {
-  //       setError(json.message || "Failed to fetch data");
-  //     }
-  //   } catch (err) {
-  //     if (err.name === "AbortError") {
-  //       setError("Request timeout - please refresh");
-  //     } else {
-  //       setError(err.message);
-  //     }
-  //     console.error("Fetch error:", err);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }, []);
-
-  const fetchProducts = useCallback(async () => {
-  // Check memory cache
-  if (
-    memoryCache.data &&
-    memoryCache.timestamp &&
-    Date.now() - memoryCache.timestamp < memoryCache.duration
-  ) {
-    setProducts(memoryCache.data);
-    setLoading(false);
-    return;
-  }
-
-  if (fetchAttempted.current) return;
-  fetchAttempted.current = true;
-
-  let controller = null;
-  let timeoutId = null;
-  
-  try {
-    controller = new AbortController();
-    timeoutId = setTimeout(() => {
-      if (controller && !controller.signal.aborted) {
-        controller.abort();
+        if (timeDiff < CACHE_DURATION) {
+          const parsedData = JSON.parse(cachedData);
+          if (parsedData && parsedData.length > 0) {
+            setProducts(parsedData);
+            setLoading(false);
+            return true;
+          }
+        }
       }
-    }, 8000);
-
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/products/best-selling`,
-      {
-        signal: controller.signal,
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      },
-    );
-
-    if (timeoutId) clearTimeout(timeoutId);
-
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
-    const json = await response.json();
-
-    if (json.success) {
-      const productData = json.data || [];
-      setProducts(productData);
-      memoryCache.data = productData;
-      memoryCache.timestamp = Date.now();
-    } else {
-      setError(json.message || "Failed to fetch data");
+      return false;
+    } catch (err) {
+      console.error("Cache read error:", err);
+      return false;
     }
-  } catch (err) {
-    // Only treat as error if it's not an intentional abort
-    if (err.name === "AbortError") {
-      console.log("Request was intentionally aborted due to timeout");
-      setError("Request is taking too long - please refresh");
-    } else {
-      setError(err.message);
-      console.error("Fetch error:", err);
+  }, []);
+
+  // Save to cache
+  const saveToCache = useCallback((data) => {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+      localStorage.setItem(`${CACHE_KEY}_time`, Date.now().toString());
+    } catch (err) {
+      console.error("Cache write error:", err);
     }
-  } finally {
-    setLoading(false);
+  }, []);
+
+  // Fetch products with retry logic
+  const fetchProducts = useCallback(
+    async (retryAttempt = 0) => {
+      // Don't fetch if already fetching
+      if (fetchAttempted.current) return;
+
+      fetchAttempted.current = true;
+
+      // Cancel previous request if exists
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+
+      try {
+        const timeoutId = setTimeout(() => {
+          if (controller && !controller.signal.aborted) {
+            controller.abort();
+          }
+        }, 10000); // 10 second timeout
+
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/products/best-selling`,
+          {
+            signal: controller.signal,
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          },
+        );
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const json = await response.json();
+
+        if (isMounted.current) {
+          if (json.success) {
+            const productData = json.data || [];
+            setProducts(productData);
+            setError(null);
+            saveToCache(productData);
+          } else {
+            throw new Error(json.message || "Failed to fetch data");
+          }
+        }
+      } catch (err) {
+        if (isMounted.current) {
+          // Handle abort errors gracefully
+          if (err.name === "AbortError") {
+            console.log("Request was aborted");
+            // Don't set error for abort, just retry if needed
+            if (retryAttempt < 2) {
+              setTimeout(
+                () => {
+                  if (isMounted.current) {
+                    fetchProducts(retryAttempt + 1);
+                  }
+                },
+                1000 * (retryAttempt + 1),
+              );
+            } else {
+              setError("Request timeout - please check your connection");
+            }
+          } else {
+            setError(err.message);
+            // Auto retry for network errors
+            if (retryAttempt < 2 && !err.message.includes("HTTP")) {
+              setTimeout(() => {
+                if (isMounted.current) {
+                  fetchProducts(retryAttempt + 1);
+                }
+              }, 2000);
+            }
+          }
+        }
+      } finally {
+        if (isMounted.current) {
+          setLoading(false);
+          fetchAttempted.current = false;
+          abortControllerRef.current = null;
+        }
+      }
+    },
+    [saveToCache],
+  );
+
+  // Handle manual retry
+  const handleRetry = useCallback(() => {
+    setLoading(true);
+    setError(null);
     fetchAttempted.current = false;
-  }
-}, []);
-
-  // Initial fetch
-  useEffect(() => {
-    fetchProducts();
+    setRetryCount((prev) => prev + 1);
+    fetchProducts(0);
   }, [fetchProducts]);
 
-  // Handle swiper progress - cleaner approach
+  // Initial load with cache first
+  useEffect(() => {
+    isMounted.current = true;
+
+    // Try cache first for instant display
+    const hasCache = loadFromCache();
+
+    // Always fetch fresh data in background
+    if (!hasCache) {
+      fetchProducts(0);
+    } else {
+      // Still fetch in background to update cache
+      fetchProducts(0);
+    }
+
+    return () => {
+      isMounted.current = false;
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, [loadFromCache, fetchProducts, retryCount]);
+
+  // Handle swiper progress
   const handleSlideChange = useCallback(
     (swiper) => {
       if (!products.length) return;
@@ -191,104 +260,93 @@ export default function BestSelling() {
     [products.length],
   );
 
-  // Loading state
-  if (loading) {
+  // Memoize product cards to prevent unnecessary re-renders
+  const productSlides = useMemo(() => {
+    return products.map((item, index) => (
+      <SwiperSlide key={item.id}>
+        <ProductCard1 item={item} priority={index < 4} />
+      </SwiperSlide>
+    ));
+  }, [products]);
+
+  // Loading state - show skeleton immediately
+  if (loading && products.length === 0) {
     return <BestSellingSkeleton />;
   }
 
-  // Error state
-  if (error) {
+  // Error state - only show if no products and error exists
+  if (error && products.length === 0) {
+    return <ErrorState error={error} onRetry={handleRetry} />;
+  }
+
+  // No products state
+  if (!products.length && !loading) {
     return (
       <div className="best-selling-product-section mx-auto px-2 md:px-10 py-8">
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-center">
-          <p className="text-red-700 mb-2">
-            Failed to load Best Selling products
-          </p>
+        <div className="text-center text-gray-600 py-12">
+          <p className="mb-2">No best selling products found.</p>
           <button
-            onClick={() => {
-              setLoading(true);
-              setError(null);
-              fetchAttempted.current = false;
-              fetchProducts();
-            }}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+            onClick={handleRetry}
+            className="mt-2 px-4 py-2 bg-main text-white rounded hover:opacity-90"
           >
-            Try Again
+            Refresh
           </button>
         </div>
       </div>
     );
   }
 
-  // No products state
-  if (!products.length) {
-    return (
-      <div className="best-selling-product-section mx-auto px-2 md:px-10 py-8">
-        <div className="text-center text-gray-600 py-12">
-          No best selling products found.
-        </div>
-      </div>
-    );
-  }
-
-  // Main render
+  // Main render - show cached data while loading in background
   return (
     <div className="best-selling-product-section mx-auto px-2 md:px-10 py-8">
-      {/* Header with View All button */}
+      {/* Header */}
       <div className="flex flex-col items-center justify-center text-center mb-6">
-        <h1 className="md:text-3xl text-lg text-black uppercase">
+        <h1 className="md:text-3xl text-lg text-black uppercase mb-4">
           Best Selling
         </h1>
-        <span className="text-sm">
+        <span className="text-sm text-gray-600 uppercase">
           Customer Favorites: Explore Our Best-Loved Styles
         </span>
+        {loading && (
+          <div className="mt-2">
+            <div className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-main"></div>
+            <span className="text-xs text-gray-500 ml-2">Updating...</span>
+          </div>
+        )}
       </div>
 
-      {/* Swiper */}
-      <Swiper
-        ref={swiperRef}
-        modules={[Navigation, Autoplay]}
-        autoplay={{
-          delay: 6500,
-          disableOnInteraction: false,
-          pauseOnMouseEnter: true,
-        }}
-        spaceBetween={40}
-        slidesPerView={4}
-        navigation={true}
-        onSlideChange={handleSlideChange}
-        breakpoints={{
-          320: { slidesPerView: 2, spaceBetween: 10 }, // Keep 2 for mobile
-          640: { slidesPerView: 3, spaceBetween: 15 }, // Keep 3 for tablet
-          768: { slidesPerView: 4, spaceBetween: 15 }, // 4 items from tablet up
-          1024: { slidesPerView: 4, spaceBetween: 30 },
-          1280: { slidesPerView: 4, spaceBetween: 30 },
-        }}
-        className="best-selling-swiper"
-      >
-        {products.map((item, index) => (
-          <SwiperSlide key={item.id}>
-            <ProductCard1 item={item} priority={index < 2} />
-          </SwiperSlide>
-        ))}
-      </Swiper>
-
-      {/* Progress bar - only show if multiple slides */}
-      {products.length > 6 && (
-        <div className="w-full h-[2px] bg-gray-200 mt-8 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-main transition-all duration-300 ease-out rounded-full"
-            style={{ width: `${swiperProgress}%` }}
-          ></div>
-        </div>
-      )}
-
-      <div className="flex justify-center my-3">
-        <Link
-          href="/shop_page?sort=best-selling"
-          className="flex items-center gap-2 cursor-pointer bg-main text-white hover:underline px-5 md:px-10 py-2 hover:opacity-90 transition"
+      {/* Swiper with error boundary */}
+      <div className="relative">
+        <Swiper
+          ref={swiperRef}
+          modules={[Navigation, Autoplay]}
+          autoplay={{
+            delay: 6500,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+          }}
+          spaceBetween={20}
+          slidesPerView={2}
+          navigation={products.length > 4}
+          onSlideChange={handleSlideChange}
+          breakpoints={{
+            320: { slidesPerView: 2, spaceBetween: 10 },
+            640: { slidesPerView: 3, spaceBetween: 15 },
+            768: { slidesPerView: 3, spaceBetween: 20 },
+            1024: { slidesPerView: 4, spaceBetween: 25 },
+            1280: { slidesPerView: 4, spaceBetween: 30 },
+          }}
+          className="best-selling-swiper"
+          style={{ opacity: loading && products.length ? 0.7 : 1 }}
         >
-          <span className="text-sm md:text-base">View All</span>
+          {productSlides}
+        </Swiper>
+      </div>
+
+      {/* View All Button */}
+      <div className="flex justify-center mt-8">
+        <Link href="/shop_page?sort=best-selling" className="btn-wipe group">
+         <HoverButton name="View All" />
         </Link>
       </div>
     </div>

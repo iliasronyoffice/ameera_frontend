@@ -50,7 +50,7 @@ export default function WatchAndBuy() {
     return (
       <div className="px-2 md:px-10 py-10">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl md:text-2xl font-semibold tracking-wide">
+          <h2 className="text-xl sm:text-xl md:text-3xl uppercase text-black">
             WATCH & BUY
           </h2>
           <div className="flex items-center gap-2">
@@ -84,7 +84,7 @@ export default function WatchAndBuy() {
       <div className="px-2 md:px-10 py-10">
         {/* Header with Custom Navigation Buttons */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl md:text-2xl font-semibold tracking-wide">
+          <h2 className="text-xl sm:text-xl md:text-3xl uppercase text-black">
             WATCH & BUY
           </h2>
 

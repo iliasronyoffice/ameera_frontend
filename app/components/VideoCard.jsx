@@ -32,8 +32,8 @@ export default function VideoCard({ item }) {
 
           {/* Play Button */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-8 h-8 md:w-14 md:h-14 bg-white rounded-full flex items-center justify-center shadow-lg">
-              <div className="w-0 h-0 border-t-[8px] border-t-transparent border-l-[14px] border-l-red-600 border-b-[8px] border-b-transparent ml-1"></div>
+            <div className="w-8 h-8 md:w-14 md:h-14 bg-main opacity-60 rounded-full flex items-center justify-center shadow-lg">
+              <div className="w-0 h-0 border-t-[8px] border-t-transparent border-l-[14px] border-l-white border-b-[8px] border-b-transparent ml-1"></div>
             </div>
           </div>
 
@@ -46,14 +46,14 @@ export default function VideoCard({ item }) {
           </div> */}
         </div>
 
-        <div className="mt-3 flex items-start gap-2">
+        <div className="mt-1 flex items-start gap-2 bg-[#F6EEEA]">
           <img
             src={item.thumbnail_image}
             className="w-12 h-16 object-cover"
-            alt=""
+            alt="{item.name}"
           />
-          <div className="flex-1">
-            <p className="text-sm font-medium line-clamp-2 text-gray-800 h-10">
+          <div className="flex-1 p-1">
+            <p className="text-xs font-medium line-clamp-2 text-gray-800 h-10">
               {item.name}
             </p>
             {/* <p className="text-xs text-gray-500 mt-0.5">{item.sales_name}</p>

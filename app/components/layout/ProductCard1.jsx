@@ -1,105 +1,141 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import TruncateWords from "./TruncateWords";
-import { useState } from "react";
+import { memo, useState, useCallback, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { openCartModal } from "@/store/slices/cartModalSlice";
 import WishlistButton from "../WishlistButton";
 import CartIcon from "../icons/CartIcon";
 import OutOfStock from "../icons/OutOfStock";
 
-export default function ProductCard1({ item, priority = false }) {
+// Extracted helper functions outside component to prevent recreation
+const formatPrice = (price) => {
+  if (!price) return "৳0";
+  if (typeof price === "string") return price;
+  return `৳${price.toLocaleString()}`;
+};
+
+const ProductCard1 = memo(({ item, priority = false }) => {
   const [imageError, setImageError] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [hoverImageError, setHoverImageError] = useState(false);
   const dispatch = useDispatch();
 
-  // Get the product ID and slug from the item
-  const productId = item.id || item.product_id;
-  const productSlug = item.slug;
-  // console.log("Item found for slug",item);
-
-  // Format price display (your existing functions remain the same)
-  const getMainPrice = () => {
-    if (item.main_price) return item.main_price;
-    if (item.price) {
-      if (typeof item.price === "string") return item.price;
-      return `৳${item.price.toLocaleString()}`;
+  // Memoize derived values to prevent recalculation on every render
+  const {
+    productId,
+    productSlug,
+    currentImage,
+    discount,
+    isOutOfStockFlag,
+    mainPrice,
+    strokedPrice,
+    category,
+    salesCount,
+    rating,
+    seller
+  } = useMemo(() => {
+    const id = item.id || item.product_id;
+    const slug = item.slug;
+    
+    // Determine current image
+    let currentImg = item.thumbnail_image;
+    if (isHovered && item.hover_image && !hoverImageError) {
+      currentImg = item.hover_image;
     }
-    if (item.unit_price) {
-      return `৳${item.unit_price.toLocaleString()}`;
+    
+    // Calculate discount
+    let disc = null;
+    if (item.discount && item.discount !== "-0%") disc = item.discount;
+    else if (item.has_discount && item.discount_percent) disc = `-${item.discount_percent}%`;
+    
+    // Check stock
+    const stock = item.recent_stock ?? item.stock ?? item.quantity ?? 0;
+    const outOfStock = stock <= 0;
+    
+    // Format prices
+    let mainPriceStr = "৳0";
+    if (item.main_price) mainPriceStr = item.main_price;
+    else if (item.price) mainPriceStr = formatPrice(item.price);
+    else if (item.unit_price) mainPriceStr = formatPrice(item.unit_price);
+    
+    let strokedPriceStr = null;
+    if (item.stroked_price) strokedPriceStr = item.stroked_price;
+    else if (item.oldPrice) strokedPriceStr = formatPrice(item.oldPrice);
+    
+    // Get category
+    let cat = "";
+    if (item.category) cat = item.category;
+    else if (item.category_name) cat = item.category_name;
+    else if (item.brand?.name) cat = item.brand.name;
+    
+    // Get sales count
+    let sales = "0 Items Sold";
+    if (item.sales) sales = `${item.sales} Items Sold`;
+    else if (item.num_of_sale) sales = `${item.num_of_sale} Items Sold`;
+    else if (item.sold) sales = `${item.sold} Items Sold`;
+    
+    return {
+      productId: id,
+      productSlug: slug,
+      currentImage: currentImg,
+      discount: disc,
+      isOutOfStockFlag: outOfStock,
+      mainPrice: mainPriceStr,
+      strokedPrice: strokedPriceStr,
+      category: cat,
+      salesCount: sales,
+      rating: item.rating || 0,
+      seller: item.added_by || item.shop_name || item.seller || "Unknown Seller"
+    };
+  }, [item, isHovered, hoverImageError]);
+
+  // Memoize event handlers
+  const handleMouseEnter = useCallback(() => {
+    if (item.hover_image && !hoverImageError) {
+      setIsHovered(true);
     }
-    return "৳0";
-  };
+  }, [item.hover_image, hoverImageError]);
 
-  const getStrokedPrice = () => {
-    if (item.stroked_price) return item.stroked_price;
-    if (item.oldPrice) {
-      if (typeof item.oldPrice === "string") return item.oldPrice;
-      return `৳${item.oldPrice.toLocaleString()}`;
-    }
-    return null;
-  };
+  const handleMouseLeave = useCallback(() => {
+    setIsHovered(false);
+  }, []);
 
-  const getDiscount = () => {
-    if (item.discount && item.discount !== "-0%") return item.discount;
-    if (item.has_discount && item.discount_percent) {
-      return `-${item.discount_percent}%`;
-    }
-    return null;
-  };
-
-  const getSalesCount = () => {
-    if (item.sales) return `${item.sales} Items Sold`;
-    if (item.num_of_sale) return `${item.num_of_sale} Items Sold`;
-    if (item.sold) return `${item.sold} Items Sold`;
-    return "0 Items Sold";
-  };
-
-  const getCategory = () => {
-    if (item.category) return item.category;
-    if (item.category_name) return item.category_name;
-    if (item.brand?.name) return item.brand.name;
-    return "";
-  };
-
-  const getSeller = () => {
-    if (item.added_by) return item.added_by;
-    if (item.shop_name) return item.shop_name;
-    if (item.seller) return item.seller;
-    return "Unknown Seller";
-  };
-
-  const getRating = () => {
-    return item.rating || 0;
-  };
-
-  const isOutOfStock = () => {
-    const stock = item.recent_stock || item.stock || item.quantity || 0;
-    return stock <= 0;
-  };
-
-  const handleAddToCartClick = (e) => {
-    e.preventDefault(); // Prevent Link navigation
-    e.stopPropagation(); // Stop event bubbling
-
+  const handleAddToCartClick = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (productId) {
-      // Open modal through Redux
-      dispatch(
-        openCartModal({
-          productId,
-          productSlug,
-          product: item,
-        }),
-      );
+      dispatch(openCartModal({
+        productId,
+        productSlug,
+        product: item,
+      }));
     }
-  };
+  }, [dispatch, productId, productSlug, item]);
 
-  const discount = getDiscount();
-  const isOutOfStockFlag = isOutOfStock();
+  const handleImageError = useCallback(() => {
+    if (isHovered && item.hover_image) {
+      setHoverImageError(true);
+      setIsHovered(false);
+    } else {
+      setImageError(true);
+    }
+  }, [isHovered, item.hover_image]);
+
+  // Memoize image dimensions for better performance
+  const imageSizes = useMemo(() => 
+    "(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw", 
+  []);
+
+  // Don't render if no essential data
+  if (!item || (!item.id && !item.product_id)) {
+    return null;
+  }
 
   return (
-    <div className="bg-white border border-[#F1F1FE] my-2 shadow-sm hover:shadow-2xl duration-300 relative group cursor-pointer">
-      <Link href={`/Products/${item.slug || item.id}`}>
+    <div className="bg-white my-2 hover:shadow-2xl duration-300 relative group cursor-pointer">
+      <Link href={`/Products/${item.slug || item.id}`} prefetch={false}>
         {/* Discount & New Badge */}
         {discount && !isOutOfStockFlag && (
           <span className="absolute top-0 right-0 z-30 bg-red-500 text-white text-xs font-semibold px-4 py-2 overflow-hidden">
@@ -114,19 +150,22 @@ export default function ProductCard1({ item, priority = false }) {
           </span>
         )}
 
-        <div className="relative w-full h-[230px] md:h-[330px] 2xl:h-[620px] overflow-hidden bg-gray-50">
-          {!imageError ? (
+        <div
+          className="relative w-full h-[230px] md:h-[330px] 2xl:h-[620px] overflow-hidden bg-gray-50"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          {!imageError && currentImage ? (
             <Image
-              src={item.thumbnail_image}
+              src={currentImage}
               alt={item.name || item.title || "Product"}
               fill
               className="object-cover hover:scale-105 transition-transform duration-300"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              onError={() => setImageError(true)}
+              sizes={imageSizes}
+              onError={handleImageError}
               loading={priority ? "eager" : "lazy"}
               priority={priority}
-              quality={85}
-              // Add these styles to maintain aspect ratio
+              quality={75} // Reduced quality for better performance
               style={{ objectFit: "cover" }}
             />
           ) : (
@@ -147,43 +186,44 @@ export default function ProductCard1({ item, priority = false }) {
             </div>
           )}
 
-          {/* sales tag added here  */}
+          {/* Sales tag */}
           {item.sales_name && (
-            <div className="absolute bottom-4 left-4 text-black bg-white text-xs font-medium px-3 py-1 md:px-5 md:py-2">
-              {item.sales_name ?? ''}
+            <div className="absolute bottom-4 left-4 text-black bg-white opacity-70 text-xs font-medium px-3 py-1 md:px-5 md:py-2">
+              {item.sales_name}
             </div>
           )}
         </div>
 
-        <div className="text-part 2xl:p-3 md:p-2 p-2">
-          <p className="text-[11px] text-main font-medium">{getCategory()}</p>
+        <div className="text-part 2xl:p-3 md:p-2 p-2 h-[120px] md:h-[120px] 2xl:h-[140px]">
+          {category && (
+            <p className="text-[11px] text-main font-medium truncate uppercase">
+              {category}
+            </p>
+          )}
 
           <div className="flex justify-between items-center gap-2">
-            {/* Left side - Title and Price */}
-            <div className="flex flex-col gap-1 flex-1">
-              <h1 className="text-[13px] font-semibold mt-1 h-10 overflow-hidden text-black">
-                {TruncateWords(item.name || item.title, 9)}
+            <div className="flex flex-col gap-1 flex-1 min-w-0">
+              <h1 className="text-md mt-1 line-clamp-2 text-main">
+                {item.name || item.title}
               </h1>
 
-              <div className="flex items-center gap-1 mt-3">
-                <span className="font-bold sm:text-[8px] md:text-[12px] 2xl:text-[15px] text-[11px] text-black">
-                  {getMainPrice()}
+              <div className="flex items-center gap-1 mt-3 flex-wrap">
+                <span className="text-[11px] md:text-[13px] text-main opacity-65">
+                  {mainPrice}
                 </span>
-                {getStrokedPrice() && (
-                  <span className="text-[8px] text-gray-400 line-through sm:text-[8px] md:text-[10px] 2xl:text-[12px]">
-                    {getStrokedPrice()}
+                {strokedPrice && (
+                  <span className="text-[8px] text-gray-400 line-through md:text-[12px]">
+                    {strokedPrice}
                   </span>
                 )}
               </div>
             </div>
 
-            {/* Right side - Cart Button - Now vertically centered */}
             <button
               onClick={handleAddToCartClick}
               disabled={isOutOfStockFlag}
-              className={`cursor-pointer flex items-center gap-1 text-white text-[12px] 2xl:text-[12px] md:text-[9px] lg:text-[12px] font-medium px-3 md:px-2 lg:px-3 2xl:px-2 py-1 rounded-md transition ${
-                isOutOfStockFlag ? "cursor-not-allowed opacity-50" : ""
-              }`}
+              className="flex-shrink-0 cursor-pointer transition hover:scale-110 disabled:hover:scale-100 bg-[#F6EEEA] p-2"
+              aria-label={isOutOfStockFlag ? "Out of stock" : "Add to cart"}
             >
               {isOutOfStockFlag ? (
                 <OutOfStock
@@ -197,15 +237,18 @@ export default function ProductCard1({ item, priority = false }) {
           </div>
         </div>
 
-        {/* Wishlist + Quick View Icons (remain the same) */}
-        <div className="cursor-pointer absolute left-2 top-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 translate-x-[-5px] group-hover:translate-x-0 transition-all duration-300 z-40">
+        {/* Wishlist Button */}
+        <div className="cursor-pointer absolute left-2 top-2 opacity-0 group-hover:opacity-100 translate-x-[-5px] group-hover:translate-x-0 transition-all duration-300 z-40">
           <WishlistButton
             productId={productId}
-            className="bg-white p-2 shadow-md hover:bg-gray-100 transition"
+            className="bg-white p-2 shadow-md hover:bg-gray-100 transition block"
           />
-
         </div>
       </Link>
     </div>
   );
-}
+});
+
+ProductCard1.displayName = "ProductCard1";
+
+export default ProductCard1;
