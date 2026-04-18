@@ -48,7 +48,7 @@ export default function BecomeSeller() {
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-800">
-              Build Your Business with Khucra!
+              Build Your Business with Softcommerce!
             </h2>
             <p className="text-gray-500 text-sm">
               Complete a quick registration and start selling today.

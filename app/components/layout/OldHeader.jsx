@@ -89,7 +89,7 @@ export default function Header() {
 
             <input
               type="text"
-              placeholder="Search Khucra"
+              placeholder="Search.."
               className="flex-1 px-3 py-0 lg:py-3 text-black text-sm focus:outline-none bg-white w-full"
             />
             <button className="bg-yellow-400 px-2 lg:px-4 py-0 lg:py-3 rounded-r-md hover:bg-yellow-500 flex items-center justify-center">
