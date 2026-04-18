@@ -447,7 +447,7 @@ const handleFilterChange = (filterType, value) => {
 
       <div className="flex flex-col lg:flex-row gap-6 relative">
         {/* Sidebar (desktop only) */}
-        <aside className="hidden lg:block w-full lg:w-1/4 bg-white border border-gray-200 rounded-2xl shadow-sm p-4 space-y-6 h-fit sticky top-20 overflow-y-auto">
+        <aside className="hidden lg:block w-full lg:w-1/4 bg-white border border-gray-200 shadow-sm p-4 space-y-6 h-fit sticky top-20 overflow-y-auto">
           {/* <SidebarContent
             categories={categories}
             brands={brands}
@@ -601,7 +601,7 @@ const handleFilterChange = (filterType, value) => {
           {/* Grid */}
           {!loading && products.length > 0 && (
             <>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-8">
                 {products.map((product, index) => {
                   const mappedProduct = {
                     id: product.id,
@@ -610,6 +610,11 @@ const handleFilterChange = (filterType, value) => {
                     thumbnail_image:
                       product.thumbnail_image ||
                       product.thumbnail_img ||
+                      "/placeholder-image.jpg",
+                      hover_image:
+                      product.hover_image ||
+                      product.hover_img ||
+                      product.thumbnail_image ||
                       "/placeholder-image.jpg",
                     sales: product.sales || product.num_of_sale || 0,
                     category: product.category_name || product.category || "",

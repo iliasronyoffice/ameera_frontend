@@ -8,29 +8,37 @@ const nextConfig = {
         port: "",
         pathname: "/public/uploads/**",
       },
-      // Add other patterns as needed
+       {
+        protocol: "http",
+        hostname: "localhost",
+        port: "",
+        pathname: "/**",
+      },
     ],
-    unoptimized: true, // Set to true for production if having image issues
     dangerouslyAllowSVG: true,
+    // Removed unoptimized: true for better Vercel performance
   },
 
   async rewrites() {
-    // Use environment variables for the backend URL
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://dev2.nisamirrorfashionhouse.com';
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    
+    // Validate backend URL in production
+    if (process.env.NODE_ENV === 'production' && !backendUrl) {
+      console.error('ERROR: NEXT_PUBLIC_BACKEND_URL is not set in production environment');
+    }
     
     return [
       {
         source: "/api/v2/:path*",
-        destination: `${backendUrl}/api/v2/:path*`,
+        destination: `${backendUrl || 'https://dev2.nisamirrorfashionhouse.com'}/api/v2/:path*`,
       },
       {
         source: "/uploads/:path*",
-        destination: `${backendUrl}/public/uploads/:path*`,
+        destination: `${backendUrl || 'https://dev2.nisamirrorfashionhouse.com'}/public/uploads/:path*`,
       },
     ];
   },
 
-  // Remove or modify headers if not needed
   async headers() {
     return [
       {
@@ -41,8 +49,32 @@ const nextConfig = {
           { key: "Access-Control-Allow-Headers", value: "Content-Type, Authorization" },
         ],
       },
+      // Add caching headers for uploaded images
+      {
+        source: "/uploads/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+          { key: "Access-Control-Allow-Origin", value: "*" },
+        ],
+      },
     ];
   },
+
+  // Production optimizations
+  swcMinify: true,
+  compress: true,
+  poweredByHeader: false, // Remove X-Powered-By header for security
+  
+  // Optional: Add redirects if needed
+  // async redirects() {
+  //   return [
+  //     {
+  //       source: '/old-path',
+  //       destination: '/new-path',
+  //       permanent: true,
+  //     },
+  //   ];
+  // },
 };
 
 export default nextConfig;
